@@ -1,0 +1,36 @@
+{
+    debug
+}
+
+:80 {
+    route {
+        # Next.js Apps: use `handle` to preserve the path for `basePath`
+        handle /hub/* {
+            reverse_proxy host.docker.internal:3000
+        }
+        handle /resume/* {
+            reverse_proxy host.docker.internal:3002
+        }
+        handle /auth/* {
+            reverse_proxy host.docker.internal:3001
+        }
+
+        # Ory Services: use `handle_path` to strip the prefix
+        handle_path /kratos/* {
+            reverse_proxy kratos:4433
+        }
+        # Kratos Admin API
+        handle_path /kratos-admin/* {
+            reverse_proxy kratos:4434
+        }
+        # Hydra Public API
+        handle_path /hydra/* {
+            reverse_proxy hydra:4444
+        }
+
+        # Redirect root to the hub app
+        handle {
+            redir / /hub/ 302
+        }
+    }
+}

@@ -1,0 +1,41 @@
+version: v2.2.0
+
+serve:
+  cookies:
+    same_site_mode: "Lax"
+  public:
+    cors:
+      enabled: true
+      allowed_origins:
+        - http://localhost
+  admin:
+    cors:
+      enabled: true
+      allowed_origins:
+        - http://localhost
+        - https://mabru.fr
+        - https://*.mabru.fr
+
+dsn: "postgres://ory:ory@postgres:5432/hydra?sslmode=disable&search_path=public"
+
+secrets:
+  system:
+    - "0123456789012345678901234567890123456789012345678901234567890123"
+
+urls:
+  self:
+    issuer: http://localhost/hydra/
+  
+  login: http://localhost/kratos/self-service/login/browser
+  consent: http://localhost/auth/consent
+  logout: http://localhost/auth/logout
+  error: http://localhost/auth/error
+
+oidc:
+  subject_identifiers:
+    supported_types:
+      - public
+
+log:
+  level: debug
+  format: text

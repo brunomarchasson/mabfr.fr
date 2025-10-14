@@ -1,0 +1,100 @@
+version: "3.8"
+
+networks:
+  ory:
+    driver: bridge
+
+services:
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - ory
+    # On Linux, you may need to add the following line for host.docker.internal to work
+    extra_hosts:
+     - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=ory
+      - POSTGRES_PASSWORD=ory
+      - POSTGRES_DB=ory
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    networks:
+      - ory
+    restart: unless-stopped
+
+  kratos-migrate:
+    image: oryd/kratos:latest
+    environment:
+      - DSN=postgres://ory:ory@postgres:5432/kratos?sslmode=disable
+    volumes:
+      - ./ory/configs:/etc/kratos
+    command: migrate sql -c /etc/kratos/kratos.yml -e --yes
+    depends_on:
+      - postgres
+    networks:
+      - ory
+    restart: on-failure
+
+  kratos:
+    image: oryd/kratos:latest
+    # Ports are no longer exposed directly
+    environment:
+      - DSN=postgres://ory:ory@postgres:5432/kratos?sslmode=disable
+      - LOG_LEVEL=debug
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ALLOWED_EMAILS=${ALLOWED_EMAILS}
+    env_file:
+      - ./.env
+    command: serve -c /etc/kratos/kratos.yml --dev
+    extra_hosts:
+     - "host.docker.internal:host-gateway"
+    volumes:
+      - ./ory/configs:/etc/kratos
+    depends_on:
+      - kratos-migrate
+    networks:
+      - ory
+    restart: unless-stopped
+
+  hydra-migrate:
+    image: oryd/hydra:latest
+    environment:
+      - DSN=postgres://ory:ory@postgres:5432/hydra?sslmode=disable
+    command: migrate sql -c /etc/hydra/hydra.yml -e --yes
+    volumes:
+      - ./ory/configs:/etc/hydra
+    depends_on:
+      - postgres
+    networks:
+      - ory
+    restart: on-failure
+
+  hydra:
+    image: oryd/hydra:latest
+    # Ports are no longer exposed directly, except for the admin API needed by the consent page
+    ports:
+      - "4445:4445" # Admin API
+    environment:
+      - DSN=postgres://ory:ory@postgres:5432/hydra?sslmode=disable
+      - LOG_LEVEL=debug
+    command: serve all -c /etc/hydra/hydra.yml --dev
+    volumes:
+      - ./ory/configs:/etc/hydra
+    depends_on:
+      - hydra-migrate
+      - kratos
+    networks:
+      - ory
+    restart: unless-stopped
