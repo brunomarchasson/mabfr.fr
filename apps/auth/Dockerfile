@@ -1,58 +1,43 @@
-# Dockerfile for the 'auth' Next.js application
+# Stage 1: Build the application
+FROM node:20-alpine AS builder
 
-# ---- Base Stage ----
-# We use the official Node.js 20 image, which is lightweight and secure.
-FROM node:20-alpine AS base
+# Set working directory
 WORKDIR /app
-# Install pnpm globally in the image
+
+# Install pnpm
 RUN npm install -g pnpm
 
-# ---- Dependencies Stage ----
-# This stage is dedicated to installing dependencies. It's cached by Docker.
-# It will only be re-run if your package.json or lockfiles change, speeding up future builds.
-FROM base AS deps
-# Copy all files related to dependencies
+# Copy dependency-related files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/auth/package.json ./apps/auth/
 COPY packages/auth-client/package.json ./packages/auth-client/
 COPY packages/ui/package.json ./packages/ui/
 
-# Install ALL dependencies for the entire monorepo.
-# pnpm is smart enough to structure them correctly.
+# Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# ---- Builder Stage ----
-# In this stage, we build the actual application code.
-FROM base AS builder
-WORKDIR /app
-# Copy all the source code of the monorepo
+# Copy the rest of the source code
 COPY . .
-# Copy the installed dependencies from the 'deps' stage
-COPY --from=deps /app/node_modules ./node_modules
 
-# Use Turborepo to build ONLY the 'auth' application and its internal dependencies.
+# Build the Next.js application
+# This will now create a .next/standalone folder thanks to our config change
 RUN pnpm turbo run build --filter=auth
 
-# ---- Runner Stage ----
-# This is the final, lightweight image that will be deployed.
-FROM base AS runner
+# ---_--
+
+# Stage 2: Production Runner
+FROM node:20-alpine AS runner
+
 WORKDIR /app
 
-# Set the environment to production
-ENV NODE_ENV production
-ENV PORT 3000
+ENV NODE_ENV=production
+ENV PORT=3000
 
-# Copy only the necessary files from the 'builder' stage to run the 'auth' app.
-# This includes the compiled Next.js app, static assets, and package.json.
-COPY --from=builder /app/apps/auth/.next ./apps/auth/.next
+# Copy the standalone output from the builder stage
+COPY --from=builder /app/apps/auth/.next/standalone ./apps/auth/
+
+# Copy the public assets
 COPY --from=builder /app/apps/auth/public ./apps/auth/public
-COPY --from=builder /app/apps/auth/next.config.mjs ./apps/auth/
-COPY --from=builder /app/apps/auth/package.json ./apps/auth/
 
-# Copy the production node_modules from the 'deps' stage.
-# This is much smaller than the development node_modules.
-COPY --from=deps /app/node_modules ./node_modules
-
-# The command to start the Next.js server.
-# We use pnpm to run the "start" script defined in the auth app's package.json.
-CMD ["pnpm", "--filter=auth", "start"]
+# The standalone output includes a minimal server.js file to run the application
+CMD ["node", "apps/auth/server.js"]
