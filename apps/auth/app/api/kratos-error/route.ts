@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // This request happens server-side. It calls the Kratos admin API via the Caddy proxy.
-    const kratosAdminUrl = 'http://localhost/kratos-admin/admin';
+    const kratosAdminUrl = process.env.KRATOS_ADMIN_URL;
     const res = await fetch(`${kratosAdminUrl}/self-service/errors?id=${errorId}`);
     if (!res.ok) {
       const text = await res.text();

@@ -34,7 +34,7 @@ function LoginHandler() {
     }
   console.log('aa');
     // Fetch the login flow details from Kratos
-    fetch(`http://localhost/kratos/self-service/login/flows?id=${flowId}`, {
+    fetch(`${process.env.NEXT_PUBLIC_KRATOS_BROWSER_URL}/self-service/login/flows?id=${flowId}`, {
       credentials: 'include',
     })
       .then((res) => res.json())

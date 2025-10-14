@@ -2,11 +2,11 @@ version: v0.13.0
 
 serve:
   public:
-    base_url: http://localhost/kratos/
+    base_url: ${KRATOS_PUBLIC_URL}
     cors:
       enabled: true
       allowed_origins:
-        - http://localhost
+        - ${CORS_ALLOWED_ORIGINS}
   admin:
     base_url: http://kratos:4434
 
@@ -15,7 +15,7 @@ secrets:
     - ${KRATOS_SECRETS_COOKIE}
 
 selfservice:
-  default_browser_return_url: http://localhost/hub/
+  default_browser_return_url: ${DEFAULT_BROWSER_RETURN_URL}
   
   methods:
     password:
@@ -33,20 +33,20 @@ selfservice:
 
   flows:
     error:
-      ui_url: http://localhost/auth/error
+      ui_url: ${AUTH_APP_URL}/error
     login:
-      ui_url: http://localhost/auth/login
+      ui_url: ${AUTH_APP_URL}/login
     logout:
       after:
-        default_browser_return_url: http://localhost/auth/logout
+        default_browser_return_url: ${AUTH_APP_URL}/logout
     registration:
-      ui_url: http://localhost/auth/registration
+      ui_url: ${AUTH_APP_URL}/registration
       after:
         oidc:
           hooks:
             - hook: web_hook
               config:
-                url: http://host.docker.internal:3001/auth/api/hooks/registration-after/
+                url: ${AUTH_APP_URL}/api/hooks/registration-after/
                 method: POST
                 body: base64://ZnVuY3Rpb24oY3R4KSBjdHguaWRlbnRpdHk=
                 can_interrupt: true
@@ -59,7 +59,7 @@ identity:
       url: file:///etc/kratos/identity.schema.json
 
 oauth2_provider:
-  url: http://hydra:4445
+  url: ${HYDRA_ADMIN_URL}
 
 log:
   level: debug

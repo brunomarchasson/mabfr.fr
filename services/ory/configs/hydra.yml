@@ -7,29 +7,27 @@ serve:
     cors:
       enabled: true
       allowed_origins:
-        - http://localhost
+        - ${CORS_ALLOWED_ORIGINS}
   admin:
     cors:
       enabled: true
       allowed_origins:
-        - http://localhost
-        - https://mabru.fr
-        - https://*.mabru.fr
+        - ${CORS_ALLOWED_ORIGINS}
 
 dsn: "postgres://ory:ory@postgres:5432/hydra?sslmode=disable&search_path=public"
 
 secrets:
   system:
-    - "0123456789012345678901234567890123456789012345678901234567890123"
+    - ${HYDRA_SECRETS_SYSTEM}
 
 urls:
   self:
-    issuer: http://localhost/hydra/
+    issuer: ${HYDRA_PUBLIC_URL}
   
-  login: http://localhost/kratos/self-service/login/browser
-  consent: http://localhost/auth/consent
-  logout: http://localhost/auth/logout
-  error: http://localhost/auth/error
+  login: ${KRATOS_BROWSER_URL}/self-service/login/browser
+  consent: ${AUTH_APP_URL}/consent
+  logout: ${AUTH_APP_URL}/logout
+  error: ${AUTH_APP_URL}/error
 
 oidc:
   subject_identifiers:

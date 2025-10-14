@@ -33,7 +33,7 @@ function RegistrationHandler() {
       return;
     }
 
-    fetch(`http://localhost/kratos/self-service/registration/flows?id=${flowId}`, {
+    fetch(`${process.env.NEXT_PUBLIC_KRATOS_BROWSER_URL}/self-service/registration/flows?id=${flowId}`, {
       credentials: 'include',
     })
       .then((res) => res.json())

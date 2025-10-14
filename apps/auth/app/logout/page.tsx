@@ -24,7 +24,7 @@ function LogoutHandler() {
 
     if (logoutChallenge) {
       // This is the first step of the logout, initiated by Hydra/Kratos.
-      fetch(`http://localhost/kratos/self-service/logout/browser?challenge=${logoutChallenge}`, {
+      fetch(`${process.env.NEXT_PUBLIC_KRATOS_BROWSER_URL}/self-service/logout/browser?challenge=${logoutChallenge}`, {
         credentials: 'include',
       })
         .then((res) => {
@@ -42,7 +42,7 @@ function LogoutHandler() {
         .catch((err) => {
           console.error("Failed to process Kratos logout flow", err);
           // Fallback redirect
-          router.push('http://localhost/hub/');
+          router.push(process.env.NEXT_PUBLIC_HUB_URL || '/');
         });
     } else {
       // This is the second step, after Kratos has logged out.

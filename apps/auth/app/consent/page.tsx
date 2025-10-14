@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 
 // The Hydra admin URL is internal to the Docker network and accessed via its exposed port
-const HYDRA_ADMIN_URL = 'http://localhost:4445';
+const HYDRA_ADMIN_URL = process.env.HYDRA_ADMIN_URL;
 
 async function acceptConsent(challenge: string) {
   try {
@@ -21,7 +21,7 @@ async function acceptConsent(challenge: string) {
     }
 
     // 2. Fetch the identity directly from the Kratos Admin API using the ID
-    const kratosAdminUrl = 'http://localhost/kratos-admin/admin';
+    const kratosAdminUrl = process.env.KRATOS_ADMIN_URL;
     const getIdentityRes = await fetch(`${kratosAdminUrl}/identities/${userId}`);
     if (!getIdentityRes.ok) {
       throw new Error(`Failed to fetch identity ${userId} from Kratos: ${await getIdentityRes.text()}`);

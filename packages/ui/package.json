@@ -12,7 +12,7 @@
     "oidc-client-ts": "^3.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18",
+    "@types/react": "^18.3.3",
     "typescript": "^5.0.0"
   }
 }

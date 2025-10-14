@@ -19,7 +19,7 @@ export default function CallbackPage() {
         const user: any = await authClient.handleCallback();
         const returnUrl = user?.state?.returnUrl;
         // Redirect to the returnUrl if it exists, otherwise default to the hub
-        router.push(returnUrl || 'http://localhost/hub/');
+        router.push(returnUrl || process.env.NEXT_PUBLIC_HUB_URL || '/');
       } catch (error) {
         console.error("CallbackPage: Error handling callback:", error);
         // On error, redirect to the hub as a fallback
