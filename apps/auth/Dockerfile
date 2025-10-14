@@ -7,20 +7,21 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm
 
-# Copy dependency-related files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/auth/package.json ./apps/auth/
-COPY packages/auth-client/package.json ./packages/auth-client/
-COPY packages/ui/package.json ./packages/ui/
+# Copy configuration and manifest files individually
+COPY package.json .
+COPY pnpm-lock.yaml .
+COPY pnpm-workspace.yaml .
+COPY turbo.json .
+COPY tsconfig.json .
+
+# Copy source code directories individually
+COPY ./apps ./apps
+COPY ./packages ./packages
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the source code
-COPY . .
-
 # Build the Next.js application
-# This will now create a .next/standalone folder thanks to our config change
 RUN pnpm turbo run build --filter=auth
 
 # ---_--
