@@ -48,8 +48,6 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-auth:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-auth:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Build and push hub image
         uses: docker/build-push-action@v5
@@ -60,8 +58,6 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-hub:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-hub:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Build and push resume image
         uses: docker/build-push-action@v5
@@ -72,8 +68,6 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-resume:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-resume:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       # === Trigger Deployments Section ===
 
