@@ -1,0 +1,6 @@
+# Ignore node_modules folders, Docker will install them inside the container
+**/node_modules
+
+# Ignore local development artifacts
+.turbo
+.next

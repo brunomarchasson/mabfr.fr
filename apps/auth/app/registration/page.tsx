@@ -1,7 +1,7 @@
 'use client';
 import { AuthProvider, useAuth, AuthButton } from '@mabru/ui';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 
 // This is the shape of the Kratos API response for a registration flow
 interface KratosRegistrationFlow {
@@ -23,7 +23,7 @@ const findNode = (nodes: KratosRegistrationFlow['ui']['nodes'], name: string) =>
   return nodes.find((node) => node.attributes.name === name);
 };
 
-export default function RegistrationPage() {
+function RegistrationHandler() {
   const searchParams = useSearchParams();
   const flowId = searchParams.get('flow');
   const [flow, setFlow] = useState<KratosRegistrationFlow | null>(null);
@@ -40,7 +40,7 @@ export default function RegistrationPage() {
       .then((flowData: KratosRegistrationFlow) => {
         setFlow(flowData);
         console.log('Registration flow data:', flowData);
-        const messages = flowData.ui.nodes?.map(n => n.messages).flat();
+        const messages = flowData.ui.nodes?.map((n: any) => n.messages).flat();
         // If the flow has no messages, we can proceed with the OIDC auto-submission.
         // If it has messages, it means there was a validation error (like from our webhook),
         // and we should display them instead of looping.
@@ -83,7 +83,7 @@ export default function RegistrationPage() {
         console.error("Failed to fetch Kratos registration flow", err);
       });
   }, [flowId]);
-  const messages = flow?.ui?.nodes?.map(n => n.messages).flat();
+  const messages = flow?.ui?.nodes?.map((n: any) => n.messages).flat();
   // If the flow contains messages, display them.
   if (messages) {
     return (
@@ -109,5 +109,13 @@ export default function RegistrationPage() {
       <h1>Finalizing registration...</h1>
       <p>Please wait.</p>
     </div>
+  );
+}
+
+export default function RegistrationPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RegistrationHandler />
+    </Suspense>
   );
 }

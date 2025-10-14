@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 
 // This is the shape of the Kratos API response for a login flow
 interface KratosLoginFlow {
@@ -23,7 +23,7 @@ const findNode = (nodes: KratosLoginFlow['ui']['nodes'], name: string) => {
   return nodes.find((node) => node.attributes.name === name);
 };
 
-export default function LoginPage() {
+function LoginHandler() {
   const searchParams = useSearchParams();
   const flowId = searchParams.get('flow');
 
@@ -87,5 +87,13 @@ export default function LoginPage() {
       <h1>Redirecting to login...</h1>
       <p>Please wait.</p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginHandler />
+    </Suspense>
   );
 }

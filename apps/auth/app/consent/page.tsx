@@ -61,7 +61,7 @@ async function acceptConsent(challenge: string) {
   }
 }
 
-export default async function ConsentPage({ searchParams }: { searchParams: { consent_challenge: string } }) {
+export default async function ConsentPage({ searchParams }: { searchParams: Promise<{ consent_challenge: string }> }) {
   const challenge = (await searchParams).consent_challenge;
 
   if (!challenge) {

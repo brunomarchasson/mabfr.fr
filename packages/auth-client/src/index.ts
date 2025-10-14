@@ -38,7 +38,7 @@ class AuthClient {
     });
   }
 
-  public async handleCallback(): Promise<User | null> {
+  async handleCallback(): Promise<User | undefined | null> {
     try {
       const user = await this.getManager().signinCallback();
       return user;
@@ -61,11 +61,12 @@ class AuthClient {
     await this.getManager().signinSilentCallback();
   }
 
-  public async logout(): Promise<void> {
+  public async logout(returnUrl?: string): Promise<void> {
     const user = await this.getManager().getUser();
     await this.getManager().removeUser();
     return this.getManager().signoutRedirect({
       id_token_hint: user?.id_token,
+      post_logout_redirect_uri: returnUrl,
     });
   }
 

@@ -22,4 +22,16 @@ const eslintConfig = [
   },
 ];
 
-export default eslintConfig;
+import next from "eslint-config-next";
+
+export default [
+  ...next.configs.recommended,
+  {
+    // Overrides for API routes
+    files: ["app/api/**/*.ts"],
+    rules: {
+      // API routes are not React components, so hooks rules don't apply
+      "react-hooks/rules-of-hooks": "off",
+    },
+  },
+];

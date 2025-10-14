@@ -16,7 +16,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@mabru/ui": ["./packages/ui/src/index.ts"]
+      "@mabru/ui": ["./packages/ui/src/index.ts"],
+      "@mabru/auth-client": ["./packages/auth-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules"]

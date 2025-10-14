@@ -1,10 +1,10 @@
-'use client'
+'use client';
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 import { AuthButton } from '@mabru/ui';
 
-export default function ErrorPage() {
+function ErrorHandler() {
   const searchParams = useSearchParams();
   const errorId = searchParams.get('id');
   const [errorDetails, setErrorDetails] = useState<any>(null);
@@ -67,5 +67,13 @@ export default function ErrorPage() {
         </p>
       )}
     </div>
+  );
+}
+
+export default function ErrorPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ErrorHandler />
+    </Suspense>
   );
 }

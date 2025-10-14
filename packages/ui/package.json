@@ -7,9 +7,12 @@
   "scripts": {
     "lint": "eslint ."
   },
+  "dependencies": {
+    "@mabru/auth-client": "workspace:*",
+    "oidc-client-ts": "^3.0.0"
+  },
   "devDependencies": {
-    "react": "^18",
-    "typescript": "^5",
-    "eslint": "^8"
+    "@types/react": "^18",
+    "typescript": "^5.0.0"
   }
 }

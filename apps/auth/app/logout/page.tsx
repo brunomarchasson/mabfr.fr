@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { authClient } from '@mabru/auth-client';
 
@@ -9,7 +9,7 @@ interface KratosLogoutFlow {
   logout_token: string;
 }
 
-export default function LogoutPage() {
+function LogoutHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasHandled = useRef(false);
@@ -58,5 +58,13 @@ export default function LogoutPage() {
       <h1>Finalizing logout...</h1>
       <p>Please wait.</p>
     </div>
+  );
+}
+
+export default function LogoutPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LogoutHandler />
+    </Suspense>
   );
 }

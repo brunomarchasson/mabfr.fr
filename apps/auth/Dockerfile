@@ -1,44 +1,42 @@
 # Stage 1: Build the application
 FROM node:20-alpine AS builder
-
-# Set working directory
 WORKDIR /app
-
-# Install pnpm
 RUN npm install -g pnpm
 
-# Copy configuration and manifest files individually
-COPY package.json .
-COPY pnpm-lock.yaml .
-COPY pnpm-workspace.yaml .
-COPY turbo.json .
-COPY tsconfig.json .
+# Copy configuration and manifest files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.json ./
 
-# Copy source code directories individually
+# Copy source code
 COPY ./apps ./apps
 COPY ./packages ./packages
 
-# Install dependencies
+# Install all dependencies
 RUN pnpm install --frozen-lockfile
 
-# Build the Next.js application
-RUN pnpm turbo run build --filter=auth
+# Build the target application
+RUN pnpm turbo run build --filter=@mabru/auth
 
 # ---_--
 
 # Stage 2: Production Runner
 FROM node:20-alpine AS runner
-
 WORKDIR /app
+RUN npm install -g pnpm
 
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy the standalone output from the builder stage
-COPY --from=builder /app/apps/auth/.next/standalone ./apps/auth/
+# Copy only the necessary files for production from the builder stage
+COPY --from=builder /app/package.json .
+COPY --from=builder /app/pnpm-lock.yaml .
+COPY --from=builder /app/pnpm-workspace.yaml .
 
-# Copy the public assets
-COPY --from=builder /app/apps/auth/public ./apps/auth/public
+# Copy the built application and its direct workspace dependencies
+COPY --from=builder /app/apps/auth ./apps/auth
+COPY --from=builder /app/packages ./packages
 
-# The standalone output includes a minimal server.js file to run the application
-CMD ["node", "apps/auth/server.js"]
+# Install ONLY production dependencies. This creates a smaller node_modules folder.
+RUN pnpm install --prod --frozen-lockfile
+
+# The command to start the Next.js server
+CMD ["pnpm", "--filter=@mabru/auth", "start"]

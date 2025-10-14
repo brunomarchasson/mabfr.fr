@@ -18,8 +18,14 @@
         "name": "next"
       }
     ],
+    "forceConsistentCasingInFileNames": true,
+    // Set baseUrl to the monorepo root
+    "baseUrl": "../..",
+    // Define all paths relative to the baseUrl (monorepo root)
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./apps/auth/*"],
+      "@mabru/ui/*": ["./packages/ui/src/*"],
+      "@mabru/auth-client/*": ["./packages/auth-client/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
