@@ -1,4 +1,5 @@
 import { UserManager, WebStorageStateStore, User, UserManagerSettings, UserManagerEvents } from 'oidc-client-ts';
+import { authConfig } from './config';
 
 class AuthClient {
   private userManager: UserManager | null = null;
@@ -9,14 +10,13 @@ class AuthClient {
     }
     if (typeof window !== 'undefined') {
       const settings: UserManagerSettings = {
-        authority: 'http://localhost/hydra/',
-        client_id: 'hub-app',
-        client_secret: process.env.NEXT_PUBLIC_HYDRA_CLIENT_SECRET,
-        redirect_uri: 'http://localhost/auth/callback',
-        post_logout_redirect_uri: 'http://localhost/auth/logout',
-        silent_redirect_uri: 'http://localhost/auth/silent-renew',
+        authority: authConfig.authority,
+        client_id: authConfig.clientId,
+        redirect_uri: authConfig.redirectUri,
+        post_logout_redirect_uri: authConfig.postLogoutRedirectUri,
+        silent_redirect_uri: authConfig.silentRedirectUri,
         response_type: 'code',
-        scope: 'openid profile email offline_access',
+        scope: authConfig.scope,
         userStore: new WebStorageStateStore({ store: window.localStorage }),
       };
       this.userManager = new UserManager(settings);

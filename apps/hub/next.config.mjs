@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ['@mabru/ui', '@mabru/auth-client'],
-  basePath: '/hub',
   trailingSlash: true,
   images: {
     remotePatterns: [
