@@ -48,6 +48,12 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-auth:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-auth:${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_OIDC_AUTHORITY=https://dummy.com
+            NEXT_PUBLIC_OIDC_CLIENT_ID=dummy
+            NEXT_PUBLIC_OIDC_REDIRECT_URI=https://dummy.com/callback
+            NEXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI=https://dummy.com/logout
+            NEXT_PUBLIC_OIDC_SILENT_REDIRECT_URI=https://dummy.com/silent-renew
 
       - name: Build and push hub image
         uses: docker/build-push-action@v5
@@ -58,6 +64,12 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-hub:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-hub:${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_OIDC_AUTHORITY=https://dummy.com
+            NEXT_PUBLIC_OIDC_CLIENT_ID=dummy
+            NEXT_PUBLIC_OIDC_REDIRECT_URI=https://dummy.com/callback
+            NEXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI=https://dummy.com/logout
+            NEXT_PUBLIC_OIDC_SILENT_REDIRECT_URI=https://dummy.com/silent-renew
 
       - name: Build and push resume image
         uses: docker/build-push-action@v5
@@ -68,6 +80,12 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-resume:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-resume:${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_OIDC_AUTHORITY=https://dummy.com
+            NEXT_PUBLIC_OIDC_CLIENT_ID=dummy
+            NEXT_PUBLIC_OIDC_REDIRECT_URI=https://dummy.com/callback
+            NEXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI=https://dummy.com/logout
+            NEXT_PUBLIC_OIDC_SILENT_REDIRECT_URI=https://dummy.com/silent-renew
 
       # === Trigger Deployments Section ===
 
