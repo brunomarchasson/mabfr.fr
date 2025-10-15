@@ -1,25 +1,25 @@
 name: Build, Push, and Deploy
 
-# This workflow runs on every push to the 'master' branch
 on:
   push:
     branches:
       - master
 
-# Environment variables available to all jobs
 env:
-  # The GitHub Container Registry to push to
   REGISTRY: ghcr.io
-  # The GitHub username or organization name that owns the repository
   IMAGE_OWNER: brunomarchasson
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    # Permissions needed by the workflow to push to GitHub Container Registry
     permissions:
       contents: read
       packages: write
+    
+    strategy:
+      matrix:
+        # Define the apps to build in parallel
+        app: [auth, hub, resume]
 
     steps:
       - name: Checkout repository
@@ -37,17 +37,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # === Build and Push Section ===
-
-      - name: Build and push auth image
+      - name: Build and push ${{ matrix.app }} image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./apps/auth/Dockerfile
+          file: ./apps/${{ matrix.app }}/Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-auth:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-auth:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-${{ matrix.app }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-${{ matrix.app }}:${{ github.sha }}
           build-args: |
             NEXT_PUBLIC_OIDC_AUTHORITY=https://dummy.com
             NEXT_PUBLIC_OIDC_CLIENT_ID=dummy
@@ -55,48 +53,17 @@ jobs:
             NEXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI=https://dummy.com/logout
             NEXT_PUBLIC_OIDC_SILENT_REDIRECT_URI=https://dummy.com/silent-renew
 
-      - name: Build and push hub image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./apps/hub/Dockerfile
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-hub:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-hub:${{ github.sha }}
-          build-args: |
-            NEXT_PUBLIC_OIDC_AUTHORITY=https://dummy.com
-            NEXT_PUBLIC_OIDC_CLIENT_ID=dummy
-            NEXT_PUBLIC_OIDC_REDIRECT_URI=https://dummy.com/callback
-            NEXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI=https://dummy.com/logout
-            NEXT_PUBLIC_OIDC_SILENT_REDIRECT_URI=https://dummy.com/silent-renew
+  deploy:
+    runs-on: ubuntu-latest
+    # This job depends on the successful completion of all matrix jobs in 'build'
+    needs: build
 
-      - name: Build and push resume image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./apps/resume/Dockerfile
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-resume:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-resume:${{ github.sha }}
-          build-args: |
-            NEXT_PUBLIC_OIDC_AUTHORITY=https://dummy.com
-            NEXT_PUBLIC_OIDC_CLIENT_ID=dummy
-            NEXT_PUBLIC_OIDC_REDIRECT_URI=https://dummy.com/callback
-            NEXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI=https://dummy.com/logout
-            NEXT_PUBLIC_OIDC_SILENT_REDIRECT_URI=https://dummy.com/silent-renew
-
-      # === Trigger Deployments Section ===
-
+    steps:
       - name: Deploy auth app
-        if: success()
         run: curl -X POST ${{ secrets.DOKPLOY_AUTH_WEBHOOK }}
 
       - name: Deploy hub app
-        if: success()
         run: curl -X POST ${{ secrets.DOKPLOY_HUB_WEBHOOK }}
 
       - name: Deploy resume app
-        if: success()
         run: curl -X POST ${{ secrets.DOKPLOY_RESUME_WEBHOOK }}

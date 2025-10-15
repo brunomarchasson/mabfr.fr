@@ -48,6 +48,13 @@ services:
 
   kratos:
     image: oryd/kratos:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kratos.rule=Host(`auth.mabru.fr`) && PathPrefix(`/kratos`)"
+      - "traefik.http.routers.kratos.entrypoints=websecure"
+      - "traefik.http.middlewares.strip-kratos-prefix.stripprefix.prefixes=/kratos"
+      - "traefik.http.routers.kratos.middlewares=strip-kratos-prefix"
+      - "traefik.http.services.kratos.loadbalancer.server.port=4433"
     # Ports are no longer exposed directly
     environment:
       - DSN=postgres://ory:ory@postgres:5432/kratos?sslmode=disable
@@ -83,6 +90,13 @@ services:
 
   hydra:
     image: oryd/hydra:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.hydra.rule=Host(`auth.mabru.fr`) && PathPrefix(`/hydra`)"
+      - "traefik.http.routers.hydra.entrypoints=websecure"
+      - "traefik.http.middlewares.strip-hydra-prefix.stripprefix.prefixes=/hydra"
+      - "traefik.http.routers.hydra.middlewares=strip-hydra-prefix"
+      - "traefik.http.services.hydra.loadbalancer.server.port=4444"
     # Ports are no longer exposed directly, except for the admin API needed by the consent page
     ports:
       - "4445:4445" # Admin API
