@@ -1,84 +1,70 @@
+ 'use client';
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, UserManagerSettings } from 'oidc-client-ts';
 import { AuthClient } from '@mabru/auth-client';
 
 interface AuthContextType {
   user: User | null;
-  isLoading: boolean; // This now represents total loading (config + user)
+  isLoading: boolean;
   login: (returnUrl?: string) => Promise<void>;
   logout: (returnUrl?: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// A new environment variable is needed to know where the auth app is hosted.
-const authAppUrl = process.env.NEXT_PUBLIC_AUTH_APP_URL;
+interface AuthProviderProps {
+  children: ReactNode;
+  config: Partial<UserManagerSettings>; // Config is now passed as a prop
+}
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children, config }: AuthProviderProps) => {
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      if (!authAppUrl) {
-        setError('Configuration error: NEXT_PUBLIC_AUTH_APP_URL is not set.');
-        setIsLoading(false);
-        return;
-      }
+    // Ensure all required config values are present
+    if (!config.authority || !config.client_id || !config.redirect_uri) {
+      console.error("[AuthProvider] Missing required OIDC configuration props.");
+      setIsLoading(false);
+      return;
+    }
 
+    // 1. Instantiate the AuthClient with the config from props
+    const client = new AuthClient({
+      ...config,
+      response_type: 'code',
+    } as UserManagerSettings);
+
+    setAuthClient(client);
+
+    const initialize = async () => {
       try {
-        // 1. Fetch the configuration from the API route
-        const response = await fetch(`${authAppUrl}/api/config`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch config: ${response.statusText}`);
-        }
-        const config = await response.json();
-
-        // 2. Instantiate the AuthClient with the fetched config
-        const client = new AuthClient({
-          authority: config.authority,
-          client_id: config.clientId,
-          redirect_uri: config.redirectUri,
-          post_logout_redirect_uri: config.postLogoutRedirectUri,
-          silent_redirect_uri: config.silentRedirectUri,
-          scope: config.scope,
-          response_type: 'code',
-        } as UserManagerSettings);
-
-        setAuthClient(client);
-
-        // 3. Check for the current user
+        // 2. Check for the current user
         const currentUser = await client.getUser();
         setUser(currentUser);
 
-        // 4. Set up event listeners
+        // 3. Set up event listeners
         const onUserLoaded = (loadedUser: User) => setUser(loadedUser);
         const onUserUnloaded = () => setUser(null);
         client.events.addUserLoaded(onUserLoaded);
         client.events.addUserUnloaded(onUserUnloaded);
 
-        // Return a cleanup function for the event listeners
         return () => {
           client.events.removeUserLoaded(onUserLoaded);
           client.events.removeUserUnloaded(onUserUnloaded);
         };
-      } catch (e: any) {
+      } catch (e) {
         console.error("AuthProvider initialization failed:", e);
-        setError(e.message);
       } finally {
         setIsLoading(false);
       }
     };
 
-    initializeAuth();
-    // The cleanup function will be handled by React's useEffect return value
-  }, []);
+    initialize();
 
-  if (error) {
-    return <div>Authentication Error: {error}</div>;
-  }
+  }, [config]); // Rerun if config changes
 
   const login = async (returnUrl?: string) => {
     if (!authClient) return;
