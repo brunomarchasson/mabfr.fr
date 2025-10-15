@@ -50,7 +50,7 @@ services:
     image: oryd/kratos:latest
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.kratos.rule=Host(`auth.mabru.fr`) && PathPrefix(`/kratos`)"
+      - "traefik.http.routers.kratos.rule=Host(`${DOMAIN_AUTH}`) && PathPrefix(`/kratos`)"
       - "traefik.http.routers.kratos.entrypoints=websecure"
       - "traefik.http.middlewares.strip-kratos-prefix.stripprefix.prefixes=/kratos"
       - "traefik.http.routers.kratos.middlewares=strip-kratos-prefix"
@@ -92,7 +92,7 @@ services:
     image: oryd/hydra:latest
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.hydra.rule=Host(`auth.mabru.fr`) && PathPrefix(`/hydra`)"
+      - "traefik.http.routers.hydra.rule=Host(`${DOMAIN_AUTH}`) && PathPrefix(`/hydra`)"
       - "traefik.http.routers.hydra.entrypoints=websecure"
       - "traefik.http.middlewares.strip-hydra-prefix.stripprefix.prefixes=/hydra"
       - "traefik.http.routers.hydra.middlewares=strip-hydra-prefix"
