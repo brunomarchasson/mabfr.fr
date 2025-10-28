@@ -1,0 +1,18 @@
+@layer components {
+.qrCode {
+    margin-top: 1rem;
+    display: none;
+    align-self: center;
+    place-items: center;
+
+}
+
+.qrCode svg {
+    border-radius: var(--border-radius);
+}
+
+.qrCode canvas {
+    border-radius: var(--border-radius);
+
+}
+}

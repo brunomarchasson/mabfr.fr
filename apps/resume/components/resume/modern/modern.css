@@ -1,0 +1,115 @@
+
+/* =================================================================
+   MODERN RESUME STYLE V7 (Direct Implementation)
+   ================================================================= */
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes fade-in-down {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modern-layout {
+  color: var(--foreground);
+  padding: 4rem 0;
+  overflow-x: hidden;
+  position: relative;
+
+  /* Direct Texture Implementation */
+  background-color: var(--background);
+  background-image: linear-gradient(45deg, oklch(from var(--border) l a b / 0.07) 1px, transparent 0), linear-gradient(-45deg, oklch(from var(--border) l a b / 0.07) 1px, transparent 0);
+  background-size: 16px 16px;
+}
+
+.modern-layout .container {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 4rem;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* -----------------
+ * Header & Parallax
+ * ----------------- */
+.modern-layout .header-container {
+  text-align: center;
+  will-change: transform;
+  /* Spacing is now on the container */
+  padding-bottom: 2rem;
+}
+
+.modern-layout .header h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; color: var(--foreground); margin-bottom: 0.5rem; animation: fade-in-down 600ms ease-out; }
+.modern-layout .header .label { font-size: 1.2rem; font-weight: 500; color: var(--primary); animation: fade-in-down 600ms ease-out 200ms; animation-fill-mode: both; }
+.modern-layout .header .contact { margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.5rem; font-size: 0.9rem; opacity: 0.8; animation: fade-in-down 600ms ease-out 400ms; animation-fill-mode: both; }
+.modern-layout .header .contact a:hover { color: var(--primary); }
+
+/* -----------------
+ * Section Animation
+ * ----------------- */
+.modern-layout .animated-section { opacity: 0; transform: translateY(40px); transition: transform 600ms ease, opacity 600ms ease; }
+.modern-layout .animated-section.is-visible { opacity: 1; transform: translateY(0); }
+
+/* -----------------
+ * Timeline Section
+ * ----------------- */
+.modern-layout .timeline-section { position: relative; padding-left: 2.5rem; }
+.modern-layout .timeline-section::before { content: ''; position: absolute; left: 0.5rem; top: 0.5rem; bottom: 0.5rem; width: 2px; background-color: var(--border); transform-origin: top; transform: scaleY(0); transition: transform 500ms ease-out; }
+.modern-layout .timeline-section.is-visible::before { transform: scaleY(1); }
+.modern-layout .timeline-title { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-bottom: 2rem; }
+.modern-layout .timeline-item { position: relative; margin-bottom: 2rem; opacity: 0; transform: translateX(-20px); transition: opacity 400ms ease, transform 400ms ease; }
+.modern-layout .timeline-section.is-visible .timeline-item { opacity: 1; transform: translateX(0); }
+.modern-layout .timeline-section.is-visible .timeline-item:nth-child(2) { transition-delay: 200ms; }
+.modern-layout .timeline-section.is-visible .timeline-item:nth-child(3) { transition-delay: 400ms; }
+.modern-layout .timeline-section.is-visible .timeline-item:nth-child(4) { transition-delay: 600ms; }
+.modern-layout .timeline-item:last-child { margin-bottom: 0; }
+.modern-layout .timeline-item::before { content: ''; position: absolute; left: -2.5rem; top: 0.5rem; width: 1rem; height: 1rem; border-radius: 50%; background-color: var(--secondary); border: 3px solid var(--background); transform: scale(0); transition: transform 300ms ease-out 200ms; }
+.modern-layout .timeline-section.is-visible .timeline-item::before { transform: scale(1); }
+
+/* Generic Item styles */
+.modern-layout .item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem; }
+.modern-layout .item-title { font-size: 1.1rem; font-weight: 600; color: var(--foreground); }
+.modern-layout .item-subtitle { font-size: 0.9rem; color: var(--muted-foreground); }
+.modern-layout .item-date { font-size: 0.85rem; color: var(--muted-foreground); white-space: nowrap; }
+.modern-layout .summary, .modern-layout .highlights { font-size: 0.95rem; line-height: 1.6; margin-top: 0.5rem; color: var(--muted-foreground); }
+.modern-layout .highlights ul { list-style: none; padding-left: 0; margin-top: 0.5rem; }
+.modern-layout .highlights li::before { content: '›'; color: var(--secondary); margin-right: 0.5rem; font-weight: 700; }
+
+/* -----------------
+ * Skills Section
+ * ----------------- */
+.modern-layout .skills-section .section-title { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-bottom: 1.5rem; }
+.modern-layout .skills-list { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.modern-layout .skill-tag { background-color: var(--muted); color: var(--muted-foreground); padding: 0.35rem 1rem; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; transition: all 200ms ease; opacity: 0; transform: translateY(10px); }
+.modern-layout .skill-tag:hover { background-color: var(--secondary); color: var(--secondary-foreground); }
+.modern-layout .skills-section.is-visible .skill-tag { opacity: 1; transform: translateY(0); }
+.modern-layout .skills-section.is-visible .skill-tag:nth-child(2) { transition-delay: 50ms; }
+.modern-layout .skills-section.is-visible .skill-tag:nth-child(3) { transition-delay: 100ms; }
+.modern-layout .skills-section.is-visible .skill-tag:nth-child(4) { transition-delay: 150ms; }
+.modern-layout .skills-section.is-visible .skill-tag:nth-child(5) { transition-delay: 200ms; }
+
+/* -----------------
+ * Projects Section (Frosted + Animated Cards)
+ * ----------------- */
+.modern-layout .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.modern-layout .project-card { --angle: 0deg; position: relative; border-radius: var(--radius-lg); padding: 1.5rem; border: 1px solid var(--border); background-color: oklch(from var(--card) l a b / 0.6); backdrop-filter: blur(12px); box-shadow: var(--shadow-sm); transition: transform 200ms ease, box-shadow 200ms ease; }
+.modern-layout .project-card::before { content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; background: conic-gradient(from var(--angle), var(--secondary), var(--primary), var(--secondary)) 0 0 / 100% 100% no-repeat; transition: --angle 500ms ease, opacity 300ms ease; opacity: 0; }
+.modern-layout .project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: transparent; }
+.modern-layout .project-card:hover::before { --angle: 360deg; opacity: 1; }
+
+/* =================================================================
+   PRINT STYLES
+   ================================================================= */
+@media print {
+  .modern-layout { background-image: none; }
+  .modern-layout .timeline-section::before, .modern-layout .timeline-item::before { display: none; }
+  .modern-layout .project-card { backdrop-filter: none; }
+}

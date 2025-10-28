@@ -1,0 +1,54 @@
+.resume {
+  /* Couleurs principales mappées sur le thème global */
+  --color-primary: var(--sidebar-primary);
+  --color-on-primary: var(--sidebar-primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--accent-foreground);
+  --color-error: var(--destructive);
+
+  /* Arrière-plan et texte mappés sur le thème global */
+  --color-background: var(--background);
+  --color-text: var(--foreground);
+
+  /* Palette Neutral (gris) - conservée pour les états hover, etc. */
+  --neutral-100: oklch(98% 0.01 270);
+  --neutral-200: oklch(95% 0.01 270);
+  --neutral-300: oklch(90% 0.01 270);
+  --neutral-400: oklch(85% 0.01 270);
+  --neutral-500: oklch(70% 0.01 270);
+  --neutral-600: oklch(50% 0.01 270);
+  --neutral-700: oklch(35% 0.01 270);
+  --neutral-800: oklch(20% 0.01 270);
+  --neutral-900: oklch(10% 0.01 270);
+}
+
+.resume {
+  background-color: var(--color-background);
+  padding: 1rem;
+  color: var(--color-text);
+  overflow: hidden;
+  display: block;
+}
+
+/* Mobile layout : tout en colonne */
+.resume {
+  display: grid;
+  
+}
+
+/* Desktop layout */
+@media (min-width: 768px) {
+  .resume {
+    display: flow-root;
+  }
+}
+
+@media print {
+  .resume {
+    display: flow-root;
+    --color-background: white;
+    padding: 0;
+  }
+}

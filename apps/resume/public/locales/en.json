@@ -1,0 +1,40 @@
+{
+    "Resume": {
+        "Skills": "Skills",
+        "Interests": "Interests",
+        "Work Experience": "Work Experience",
+        "Certificates": "Certificates",
+        "Projects": "Projects",
+        "Volunteer": "Volunteer",
+        "Education": "Education",
+        "Awards": "Awards",
+        "Publications": "Publications",
+        "Languages": "Languages",
+        "References": "References",
+        "Current": "Current"
+    },
+    "Drawer": {
+        "menu": "Menu",
+        "theme": "Theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System",
+        "style": "Style",
+        "default": "Default",
+        "modern": "Modern",
+        "terminal": "Terminal",
+        "print": "Print",
+        "downloads": "Downloads",
+        "downloadPDF": "Download PDF",
+        "downloadHTML": "Download HTML",
+        "downloadJSON": "Download JSON",
+        "language": "Language",
+        "copyright": "© 2025 Bruno Marchasson",
+        "privacy": "Privacy",
+        "enterPassword": "Enter password...",
+        "unlock": "Unlock",
+        "lock": "Lock",
+        "unlockedMessage": "Sensitive data is visible.",
+        "lockedMessage": "Enter password to show private data."
+    }
+}

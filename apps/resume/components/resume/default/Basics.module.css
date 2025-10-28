@@ -1,0 +1,9 @@
+.header{
+    order:-2; 
+}
+.header h1{
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-weight: 900;
+}

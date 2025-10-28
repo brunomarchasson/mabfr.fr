@@ -1,0 +1,201 @@
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
+/* --- Theme Variables --- */
+:root {
+    --terminal-bg-light: oklch(0.98 0.005 90);
+    --terminal-text-light: oklch(0.2 0.02 240);
+    --terminal-accent-light: oklch(0.4 0.15 140);
+    --terminal-muted-light: oklch(0.4 0.02 240);
+
+    --terminal-bg-dark: oklch(0.15 0.02 240);
+    --terminal-text-dark: oklch(0.9 0.01 140);
+    --terminal-accent-dark: oklch(0.8 0.05 140);
+    --terminal-muted-dark: oklch(0.6 0.03 140);
+}
+
+/* --- Base Layout --- */
+.terminal-layout {
+    --bg: var(--terminal-bg-light);
+    --text: var(--terminal-text-light);
+    --accent: var(--terminal-accent-light);
+    --muted: var(--terminal-muted-light);
+
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.dark .terminal-layout {
+    --bg: var(--terminal-bg-dark);
+    --text: var(--terminal-text-dark);
+    --accent: var(--terminal-accent-dark);
+    --muted: var(--terminal-muted-dark);
+}
+
+.terminal-container {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* --- Command Styling --- */
+.command-block {
+    margin-bottom: 1.5rem;
+}
+
+.command-prompt {
+    display: flex;
+    align-items: center;
+}
+
+.command-prompt .prompt-symbol {
+    color: var(--accent);
+}
+
+.command-prompt .prompt-input {
+    margin-left: 0.5rem;
+}
+
+.command-output {
+    margin-top: 0.25rem;
+    margin-left: 0.5rem;
+    color: var(--muted);
+}
+
+.command-output a {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.2em;
+    background-color: var(--accent);
+    animation: blink 1s step-end infinite;
+    margin-left: 0.3em;
+}
+
+@keyframes blink {
+    from, to { background-color: transparent; }
+    50% { background-color: var(--accent); }
+}
+
+/* --- Content Specific Styles --- */
+.output-header-name {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.output-work-item {
+    margin-bottom: 1rem;
+}
+.output-work-item .position {
+    font-weight: bold;
+    color: var(--accent);
+}
+.output-work-item .date {
+    font-size: 0.8rem;
+    color: var(--accent);
+    opacity: 0.8;
+}
+.output-work-item .highlights {
+    list-style-type: '-';
+    list-style-position: inside;
+    padding-left: 0.5rem;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+.output-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+}
+
+/* --- Print Styles --- */
+.print-only {
+    display: none;
+}
+
+@media print {
+    @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+    .screen-only {
+        display: none;
+    }
+    .print-only {
+        display: block;
+    }
+
+    .terminal-layout {
+        font-family: 'Special Elite', 'Courier New', Courier, monospace;
+        font-size: 12pt;
+        line-height: 1.6;
+        color: #333;
+        background: white;
+    }
+
+    .command-block {
+        margin-bottom: 1.5rem;
+        break-inside: avoid;
+    }
+    .command-prompt {
+        display: none; /* Hide prompt for clean document look */
+    }
+    .command-output {
+        margin: 0;
+        color: #333;
+    }
+
+    /* Re-style titles for a document look */
+    .output-header-name {
+        font-size: 1.5rem; /* 24px */
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 1rem;
+        letter-spacing: 0.1em;
+        border-bottom: 1px solid #333;
+        padding-bottom: 0.5rem;
+    }
+
+    /* Use underline for emphasis */
+    .output-work-item .position,
+    .output-projects p > span,
+    .output-education p > span {
+        font-weight: normal;
+        text-decoration: underline;
+    }
+
+    .output-work-item {
+        margin-bottom: 1rem;
+    }
+    .output-work-item .date {
+        font-style: italic;
+    }
+    .output-work-item .highlights {
+        list-style-type: '-';
+        list-style-position: outside;
+        margin-left: 1rem;
+    }
+
+    .output-skills {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        padding: 0.5rem 0;
+    }
+
+    /* Hide terminal artifacts */
+    .divider {
+        display: none;
+    }
+    a {
+        text-decoration: none;
+        color: #333;
+    }
+}

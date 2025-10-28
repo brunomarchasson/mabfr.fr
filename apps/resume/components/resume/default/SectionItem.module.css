@@ -1,0 +1,17 @@
+  .sectionItem {
+      list-style-type: none;
+      margin-left: 0;
+   
+    .level{
+        display: inline;
+    }
+      .level em {
+          padding-left: 0.2em;
+      }
+  }
+
+  .sectionItem h3 {
+      font-size: inherit;
+      
+      display: inline;
+  }

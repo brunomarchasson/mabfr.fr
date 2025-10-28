@@ -10,7 +10,10 @@
   "pnpm": {
     "overrides": {
       "@types/react": "^18.3.3"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "puppeteer"
+    ]
   },
   "devDependencies": {
     "turbo": "^2.0.4"

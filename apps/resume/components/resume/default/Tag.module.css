@@ -1,0 +1,25 @@
+  .tag {
+    display: inline-block;
+    margin: 2px 2px 2px 0;
+    background: var(--tag-bg, oklch(from var(--color-secondary) l c h / 0.15));
+    color: var(--tag-text, var(--color-secondary));
+    white-space: nowrap;
+    border-radius: 9999px;
+    padding: 0.3em 0.8em;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .tag:hover {
+    background: var(--secondary-200);
+    color: var(--primary-500);
+  }
+
+  @media print {
+    .tag {
+        padding: 0.1em 0.4em;
+        font-size: 0.65rem;
+        margin: 1px;
+    }
+  }

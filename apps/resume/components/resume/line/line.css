@@ -1,0 +1,66 @@
+
+/* =================================================================
+   GSAP Scrollytelling with MotionPath
+   ================================================================= */
+
+.line-layout {
+  /* background-color: var(--background); */
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  position: relative;
+  
+}
+
+.line-svg-container {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    width: 100%;
+}
+
+.line-svg-container svg {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+}
+
+.line-path {
+    stroke-width: 3px;
+    stroke: var(--primary);
+}
+
+/* The element that will move along the path */
+.motion-dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    box-shadow: 0 0 10px 3px var(--primary);
+    opacity: 0.8;
+    z-index: 1;
+}
+
+.line-content {
+    max-width: 1440px; 
+    margin: 0 auto; 
+    position: relative; 
+    z-index: 1;
+}
+
+.line-section {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.line-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+}
