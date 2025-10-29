@@ -11,7 +11,7 @@ COPY ./apps ./apps
 COPY ./packages ./packages
 
 # Install all dependencies
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 # Define build arguments for OIDC configuration
 ARG NEXT_PUBLIC_OIDC_AUTHORITY
@@ -50,7 +50,7 @@ COPY --from=builder /app/apps/auth ./apps/auth
 COPY --from=builder /app/packages ./packages
 
 # Install ONLY production dependencies. This creates a smaller node_modules folder.
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod
 
 # The command to start the Next.js server
 CMD ["pnpm", "--filter=@mabru/auth", "start"]
