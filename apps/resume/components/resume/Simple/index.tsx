@@ -45,6 +45,8 @@ const SimpleLayout = async ({ resume, locale }: { resume: Resume; locale: string
   const { t } = await useTranslation(locale);
   const { basics, work, education, skills, projects, languages } = resume.resumeData;
 
+  const secureHref = (url: string) => resume.hasAccess ? url : undefined;
+
   return (
     <div id="resume-content" className="bg-background font-sans text-foreground print:text-black">
       <div className="max-w-4xl mx-auto p-8 sm:p-10 md:p-12 print:p-0">
@@ -53,8 +55,8 @@ const SimpleLayout = async ({ resume, locale }: { resume: Resume; locale: string
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-1 text-foreground print:text-[28px]">{basics?.name}</h1>
           <p className="text-lg md:text-xl text-muted-foreground print:text-[16px]">{basics?.label}</p>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm mt-4 text-muted-foreground">
-            {basics?.email && <a href={`mailto:${basics.email}`} className="text-primary hover:underline">{basics.email}</a>}
-            {basics?.phone && <span>{basics.phone}</span>}
+            {basics?.email && <a href={secureHref(`mailto:${basics.email}`)} className="text-primary hover:underline">{basics.email}</a>}
+            {basics?.phone && <a href={secureHref(`tel:${basics.phone}`)} className="text-primary hover:underline">{basics.phone}</a>}
             {basics?.url && <a href={basics.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{basics.url}</a>}
             {basics?.location?.city && <span>{basics.location.city}</span>}
           </div>

@@ -14,37 +14,50 @@ type LocationProps = {
   countryCode?: string;
 };
 
-const Location: React.FC<LocationProps> = async ({address,
+const Location: React.FC<LocationProps> = async ({
+  address,
   postalCode,
   city,
   region,
-  countryCode}: LocationProps) => {
-  
-  const text = [address, postalCode, city, region, countryCode].filter(Boolean).join(', ');
+  countryCode,
+}: LocationProps) => {
+  const text = [address, postalCode, city, region, countryCode]
+    .filter(Boolean)
+    .join(", ");
 
-  return (
-    <IconText icon={IconLib.envelope} text={text} />
-  );
+  return <IconText icon={IconLib.envelope} text={text} />;
 };
 
-export const Contact: React.FC <Resume> = async ({resumeData, ...rest}: Resume) => {
-  console.log(rest)
+export const Contact: React.FC<Resume> = async ({
+  resumeData,
+  hasAccess
+}: Resume) => {
   const { email, url, phone, location } = resumeData?.basics ?? {};
-  console.log(url)
   return (
     <div className={"contact"}>
       {url && (
-        <a className="hide-href-print touch-target" target="_blank" href={url} rel="noreferrer">
+        <a
+          className="hide-href-print touch-target"
+          target="_blank"
+          href={url}
+          rel="noreferrer"
+        >
           <IconText icon={IconLib.web} text={url} />
         </a>
       )}
       {email && (
-        <a className="hide-href-print touch-target" href={`mailto:${email}`}>
+        <a
+          className="hide-href-print touch-target"
+          href={hasAccess ? `mailto:${email}` : undefined}
+        >
           <IconText icon={IconLib.email} text={email} />
         </a>
       )}
       {phone && (
-        <a className="hide-href-print touch-target" href={`tel:${phone.replace(/\s+/g, "")}`}>
+        <a
+          className="hide-href-print touch-target"
+          href={hasAccess ? `tel:${phone.replace(/\s+/g, "")}` : undefined}
+        >
           <IconText icon={IconLib.phone} text={phone} />
         </a>
       )}
@@ -60,13 +73,21 @@ const Profile: React.FC<ProfileType> = ({ network, username, url }) => {
   if (!network) return null;
   const Icon = IconLib[network.toLowerCase() as keyof typeof IconLib];
   return (
-    <a className="hide-href-print touch-target" target="_blank" href={url} rel="noreferrer">
-      <IconText icon={Icon} text={username??''} />
+    <a
+      className="hide-href-print touch-target"
+      target="_blank"
+      href={url}
+      rel="noreferrer"
+    >
+      <IconText icon={Icon} text={username ?? ""} />
     </a>
   );
 };
- export async function Sidebar({ children, resume }: React.PropsWithChildren<{resume: Resume}>) {
-  const { resumeData } = resume
+export async function Sidebar({
+  children,
+  resume,
+}: React.PropsWithChildren<{ resume: Resume }>) {
+  const { resumeData } = resume;
   const { image, name, profiles, url } = resumeData?.basics ?? {};
   return (
     <aside className={style.sidebar}>
@@ -80,13 +101,12 @@ const Profile: React.FC<ProfileType> = ({ network, username, url }) => {
               src={image}
               alt={name}
             />
-            </div>
-        
+          </div>
         )}
         <div className={style.name}>{name}</div>
 
         <div className={style.sidebar__content}>
-          <Contact {...resume}/>
+          <Contact {...resume} />
           {profiles && (
             <div id={"profiles"} className="no-print">
               {profiles.map((profile) => (
