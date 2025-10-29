@@ -9,10 +9,12 @@
   },
   "pnpm": {
     "overrides": {
-      "@types/react": "^18.3.3"
+      "@types/react": "19.1.13",
+      "@types/react-dom": "19.1.9"
     },
-    "ignoredBuiltDependencies": [
-      "puppeteer"
+    "onlyBuiltDependencies": [
+      "puppeteer",
+      "sharp"
     ]
   },
   "devDependencies": {
