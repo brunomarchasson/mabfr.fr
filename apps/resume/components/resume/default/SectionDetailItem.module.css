@@ -1,29 +1,33 @@
- .sectionDetailItem {
+.sectionDetailItem {
      page-break-inside: avoid;
      list-style-type: none;
      margin-left: 0;
      margin-block-end: 1.5rem;
      border-radius: 0.5rem;
-     padding: 1rem;
+     padding: 1rem; /* Consistent padding */
      transition: background-color 0.3s ease;
  }
  .sectionDetailItem:hover {
-    background-color: var(--secondary-200);
+    background-color: var(--neutral-100); /* Lighter hover effect */
  }
 
  .header {
      display: grid;
      grid-template-columns: 1fr max-content;
+     align-items: baseline; /* Align items to their baseline */
+     /* margin-bottom: 0.5rem; Added margin below header */
  }
 
  .dates {
      order: 1;
      text-align: end;
+     font-size: 0.9rem; /* Adjusted font size */
+     color: var(--muted-foreground); /* Muted color for dates */
  }
 
  .dates span+span {
      &:before {
-         content: '\00A0-\00A0';
+         content: '\00A0–\00A0'; /* En dash for date range */
      }
  }
 
@@ -39,18 +43,30 @@
  .subTitle {
      display: inline;
      font-weight: normal;
+     font-size: .85em; /* Adjusted font size */
+     color: var(--muted-foreground); /* Muted color for subtitle */
 
      &:before {
-         content: '\00A0|\00A0';
+         content: '\00A0|\00A0'; /* Consistent separator */
      }
  }
  .location{
-
+    font-size: 0.85em; /* Adjusted font size */
+    color: var(--muted-foreground); /* Muted color for location */
  }
 
  @media print {
     .sectionDetailItem {
-        margin-block-end: 0.2rem;
+        margin-block-end: 0.2rem; /* Adjusted for print */
         padding: 0;
+    }
+    .header {
+        margin-bottom: 0.2rem;
+    }
+    .title {
+        font-size: 1rem;
+    }
+    .subTitle, .dates, .location {
+        font-size: 0.8rem;
     }
  }

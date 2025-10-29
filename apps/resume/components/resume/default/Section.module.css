@@ -33,11 +33,11 @@
     text-transform: uppercase;
     font-weight: bold;
     border: none;
-    padding-inline: 1em;
-    font-size: 0.8rem;
+    padding-inline: 1.2em; /* Increased padding */
+    font-size: 0.9rem; /* Slightly increased font size */
     font-style: normal;
     text-align: center;
-    letter-spacing: .3em;
+    letter-spacing: .2em; /* Reduced letter spacing */
     background-color: var(--local-bg,var(--color-background));
     page-break-inside: avoid;
   }

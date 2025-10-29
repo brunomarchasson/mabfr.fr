@@ -27,7 +27,8 @@ const Location: React.FC<LocationProps> = async ({address,
   );
 };
 
-export const Contact: React.FC <Resume> = async ({resumeData}: Resume) => {
+export const Contact: React.FC <Resume> = async ({resumeData, ...rest}: Resume) => {
+  console.log(rest)
   const { email, url, phone, location } = resumeData?.basics ?? {};
   console.log(url)
   return (

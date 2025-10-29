@@ -14,3 +14,4 @@ export const Basics = async ({ resume }: { resume: Resume }) => {
     </header>
   );
 };
+
