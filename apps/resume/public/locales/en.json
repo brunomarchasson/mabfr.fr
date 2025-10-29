@@ -1,6 +1,7 @@
 {
     "Resume": {
         "Skills": "Skills",
+        "About": "About",
         "Interests": "Interests",
         "Work Experience": "Work Experience",
         "Certificates": "Certificates",
@@ -23,6 +24,7 @@
         "default": "Default",
         "modern": "Modern",
         "terminal": "Terminal",
+        "simple": "Simple",
         "print": "Print",
         "downloads": "Downloads",
         "downloadPDF": "Download PDF",

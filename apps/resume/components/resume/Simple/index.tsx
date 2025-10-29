@@ -22,11 +22,21 @@ const WorkItem: React.FC<{ job: any; locale: string; t: any }> = ({ job, locale,
         {FormatDates(job.startDate, job.endDate, t('Resume.Current'), locale)}
       </div>
     </header>
-    <div className="text-md text-foreground">{job.name}</div>
+    <div className="text-md text-foreground flex justify-between items-baseline">
+      <span>{job.name}</span>
+      {job.location && <span className="text-sm text-muted-foreground">{job.location}</span>}
+    </div>
     {job.summary && <p className="text-sm text-muted-foreground mt-1">{job.summary}</p>}
     <ul className="mt-2 list-disc list-inside text-muted-foreground space-y-1 text-sm">
       {job.highlights?.map((highlight: string) => <li key={highlight}>{highlight}</li>)}
     </ul>
+    {job.keywords && job.keywords.length > 0 && (
+      <div className="flex flex-wrap gap-2 mt-2">
+        {job.keywords.map((keyword: string) => (
+          <span key={keyword} className="bg-muted text-muted-foreground text-xs font-medium px-2 py-0.5 rounded-full">{keyword}</span>
+        ))}
+      </div>
+    )}
   </div>
 );
 
@@ -98,12 +108,40 @@ const SimpleLayout = async ({ resume, locale }: { resume: Resume; locale: string
               <div className="space-y-4">
                 {projects.map((project: any) => (
                     <div key={project.name} className="break-inside-avoid">
-                        <h3 className="text-lg font-semibold text-foreground print:text-[13px]">{project.name}</h3>
-                        {project.description && <p className="text-muted-foreground text-sm">{project.description}</p>}
+                        <h3 className="text-lg font-semibold text-foreground print:text-[13px] flex justify-between items-baseline">
+                          <span>{project.name}</span>
+                          {project.url && <a href={project.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">{t('Resume.View Project')}</a>}
+                        </h3>
+                        {project.description && <p className="text-muted-foreground text-sm mt-1">{project.description}</p>}
+                        {project.highlights?.length > 0 && (
+                          <ul className="mt-2 list-disc list-inside text-muted-foreground space-y-1 text-sm">
+                            {project.highlights.map((highlight: string) => <li key={highlight}>{highlight}</li>)}
+                          </ul>
+                        )}
+                        {project.keywords?.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {project.keywords.map((keyword: string) => (
+                              <span key={keyword} className="bg-muted text-muted-foreground text-xs font-medium px-2 py-0.5 rounded-full">{keyword}</span>
+                            ))}
+                          </div>
+                        )}
                     </div>
                 ))}
               </div>
             </Section>
+        )}
+
+        {/* Languages */}
+        {languages?.length > 0 && (
+          <Section title={t('Resume.Languages')}>
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              {languages.map((lang: any) => (
+                <span key={lang.language} className="text-muted-foreground text-sm">
+                  {lang.language} ({lang.fluency})
+                </span>
+              ))}
+            </div>
+          </Section>
         )}
 
       </div>
