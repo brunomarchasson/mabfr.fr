@@ -1,15 +1,12 @@
-import { AuthClient } from '@mabru/auth-client';
-import { UserManagerSettings } from 'oidc-client-ts';
+'use client';
+import { AuthClient, AuthClientConfig } from '@mabru/auth-client';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Part 1: The Client Component that handles the browser-side logic
-// =================================================================
 
-'use client';
 
 interface CallbackHandlerProps {
-  config: Partial<UserManagerSettings>;
+  config: AuthClientConfig;
   hubUrl: string;
 }
 
@@ -18,28 +15,16 @@ function CallbackHandler({ config, hubUrl }: CallbackHandlerProps) {
   const hasHandledCallback = useRef(false);
 
   useEffect(() => {
-    // Ensure config is present
-    if (!config.authority || !config.client_id || !config.redirect_uri) {
-      console.error("[Callback] Missing required OIDC configuration props.");
-      router.push(hubUrl); // Redirect to a safe place on error
-      return;
-    }
-
     const handleAuthCallback = async () => {
       if (hasHandledCallback.current) return;
       hasHandledCallback.current = true;
 
       try {
-        // Instantiate a temporary client just for this operation
-        const client = new AuthClient(config as UserManagerSettings);
-        const user = await client.handleCallback();
-        const returnUrl = user?.state?.returnUrl;
-        
-        // Redirect to the returnUrl or the hub as a fallback
-        router.push(returnUrl || hubUrl);
+        const client = new AuthClient(config);
+        await client.handleCallback(); // The new handleCallback redirects internally
+        router.push(hubUrl); // Fallback redirect if handleCallback doesn't redirect
       } catch (error) {
         console.error("CallbackPage: Error handling callback:", error);
-        // On error, redirect to the hub
         router.push(hubUrl);
       }
     };
@@ -60,13 +45,9 @@ function CallbackHandler({ config, hubUrl }: CallbackHandlerProps) {
 
 export default async function CallbackPage() {
   // Read environment variables on the server
-  const config = {
-    authority: process.env.NEXT_PUBLIC_OIDC_AUTHORITY,
-    client_id: process.env.NEXT_PUBLIC_OIDC_CLIENT_ID,
-    redirect_uri: process.env.NEXT_PUBLIC_OIDC_REDIRECT_URI,
-    post_logout_redirect_uri: process.env.NEXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI,
-    silent_redirect_uri: process.env.NEXT_PUBLIC_OIDC_SILENT_REDIRECT_URI,
-    scope: process.env.NEXT_PUBLIC_OIDC_SCOPE,
+  const config: AuthClientConfig = {
+    kratosPublicUrl: process.env.NEXT_PUBLIC_ORY_KRATOS_PUBLIC_URL || '',
+    baseUrl: process.env.NEXT_PUBLIC_BASE_URL || '',
   };
 
   const hubUrl = process.env.NEXT_PUBLIC_HUB_URL || '/';

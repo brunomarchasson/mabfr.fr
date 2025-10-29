@@ -1,4 +1,4 @@
-import { useTranslation } from "@/i18n/server";
+import { getTranslation } from "@/i18n/server";
 import { JSONResume } from "@/types/resume";
 import { Section } from "./Section";
 import { SectionItem } from "./SectionItem";
@@ -12,7 +12,7 @@ export const Languages = async ({
   className?: string;
   locale: string;
 }) => {
-   const { t } = await useTranslation(locale);
+   const { t } = await getTranslation(locale);
   if(!languages) return null;
   return (
     <>

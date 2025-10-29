@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@mabru/auth-client": "workspace:*",
-    "oidc-client-ts": "^3.0.0"
+    "@ory/client": "^1.1.43"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

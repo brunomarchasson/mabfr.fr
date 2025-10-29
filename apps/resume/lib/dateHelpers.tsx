@@ -7,8 +7,8 @@ export const FormatDate = (
 ) => DateTime.fromISO(date).setLocale(locale).toFormat(format);
 
 export const FormatDates = (
-  startDate?: DateTime,
-  endDate?: DateTime,
+  startDate?: string,
+  endDate?: string,
   presentString: string = "Current",
   locale = "en",
   dateFormat = "LLL yyyy"

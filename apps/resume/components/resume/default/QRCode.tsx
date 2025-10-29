@@ -1,15 +1,15 @@
-import { Suspense, use } from "react";
-import QRCodeN from "qrcode";
+import { use } from "react";
+// import QRCodeN from "qrcode";
 import styles from './QRCode.module.css'
 
 export const QRCode = (props: { value: string }) => {
   const { value } = props;
-  const p = QRCodeN.toString(value, { type: "svg", margin: 4, width: 96 });
+  // const p = QRCodeN.toString(value, { type: "svg", margin: 4, width: 96 });
   return (
     <figure className={styles.qrCode + " qrCode"} aria-label="QR Code">
-      <Suspense>
+      {/* <Suspense>
         <QRCodeInner promise={p} />
-      </Suspense>
+      </Suspense> */}
     </figure>
   );
 };

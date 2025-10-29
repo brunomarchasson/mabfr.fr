@@ -1,6 +1,5 @@
 import style from './Basics.module.css'
 import React from "react";
-import { JSONResume } from '@/types/resume';
 import { Resume } from '@/lib/resume';
 
 

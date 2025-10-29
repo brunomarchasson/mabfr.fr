@@ -1,62 +1,44 @@
- 'use client';
+'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, UserManagerSettings } from 'oidc-client-ts';
-import { AuthClient } from '@mabru/auth-client';
+import { AuthClient, AuthClientConfig } from '@mabru/auth-client';
+import { Session } from '@ory/client';
 
 interface AuthContextType {
-  user: User | null;
+  session: Session | null | undefined;
   isLoading: boolean;
   login: (returnUrl?: string) => Promise<void>;
-  logout: (returnUrl?: string) => Promise<void>;
+  logout: () => Promise<void>;
+  register: (returnUrl?: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
-  config: Partial<UserManagerSettings>; // Config is now passed as a prop
 }
 
-export const AuthProvider = ({ children, config }: AuthProviderProps) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Ensure all required config values are present
-    if (!config.authority || !config.client_id || !config.redirect_uri) {
-      console.error("[AuthProvider] Missing required OIDC configuration props.");
-      setIsLoading(false);
-      return;
-    }
+    const config: AuthClientConfig = {
+      kratosPublicUrl: process.env.NEXT_PUBLIC_ORY_KRATOS_PUBLIC_URL || '',
+      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || '',
+    };
 
-    // 1. Instantiate the AuthClient with the config from props
-    const client = new AuthClient({
-      ...config,
-      response_type: 'code',
-    } as UserManagerSettings);
-
+    const client = new AuthClient(config);
     setAuthClient(client);
 
     const initialize = async () => {
       try {
-        // 2. Check for the current user
-        const currentUser = await client.getUser();
-        setUser(currentUser);
-
-        // 3. Set up event listeners
-        const onUserLoaded = (loadedUser: User) => setUser(loadedUser);
-        const onUserUnloaded = () => setUser(null);
-        client.events.addUserLoaded(onUserLoaded);
-        client.events.addUserUnloaded(onUserUnloaded);
-
-        return () => {
-          client.events.removeUserLoaded(onUserLoaded);
-          client.events.removeUserUnloaded(onUserUnloaded);
-        };
+        const currentSession = await client.getSession();
+        setSession(currentSession);
       } catch (e) {
         console.error("AuthProvider initialization failed:", e);
+        setSession(null); // Indicate no session on error
       } finally {
         setIsLoading(false);
       }
@@ -64,23 +46,29 @@ export const AuthProvider = ({ children, config }: AuthProviderProps) => {
 
     initialize();
 
-  }, [config]); // Rerun if config changes
+  }, []); // Empty dependency array, runs once on mount
 
   const login = async (returnUrl?: string) => {
     if (!authClient) return;
     await authClient.login(returnUrl);
   };
 
-  const logout = async (returnUrl?: string) => {
+  const logout = async () => {
     if (!authClient) return;
-    await authClient.logout(returnUrl);
+    await authClient.logout();
+  };
+
+  const register = async (returnUrl?: string) => {
+    if (!authClient) return;
+    await authClient.register(returnUrl);
   };
 
   const authContextValue: AuthContextType = {
-    user,
+    session,
     isLoading,
     login,
     logout,
+    register,
   };
 
   return (

@@ -3,7 +3,7 @@
 import { useAuth, AuthButton } from '@mabru/ui';
 
 export default function Page() {
-  const { user, isLoading } = useAuth();
+  const { session, isLoading } = useAuth();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
@@ -11,12 +11,13 @@ export default function Page() {
         <h1 className="text-4xl font-bold">Hub Page</h1>
         {isLoading ? (
           <p>Loading user status...</p>
-        ) : user ? (
+        ) : session ? (
           <div className="flex flex-col items-center gap-4 mt-4">
-            {user.profile.picture && (
-              <img src={user.profile.picture} alt="Profile" className="w-24 h-24 rounded-full" />
+            {/* Assuming session.identity.traits has a picture property */}
+            {session.identity?.traits?.picture && (
+              <img src={session.identity.traits.picture as string} alt="Profile" className="w-24 h-24 rounded-full" />
             )}
-            <p>Welcome, {user.profile.name || user.profile.email}</p>
+            <p>Welcome, {session.identity?.traits?.name || session.identity?.traits?.email}</p>
           </div>
         ) : (
           <p>You are not logged in.</p>

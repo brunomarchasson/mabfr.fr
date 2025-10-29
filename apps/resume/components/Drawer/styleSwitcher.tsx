@@ -3,10 +3,7 @@ import { useTranslation } from "@/i18n/provider";
 import React from "react";
 import {
   ViewColumnsIcon,
-  SparklesIcon,
-  DocumentTextIcon,
   PrinterIcon,
-  CodeBracketIcon,
 } from "./icons";
 import { Button } from "../ui/button";
 import { useQueryState } from "nuqs";

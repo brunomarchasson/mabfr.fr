@@ -1,10 +1,9 @@
-import { useTranslation } from "@/i18n/server";
+import { getTranslation } from "@/i18n/server";
 import { Section } from "./Section";
-import { JSONResume } from "@/types/resume";
 import { Resume } from "@/lib/resume";
 
 export const References = async ({ resume, locale }: { resume: Resume, locale: string }) => {
-  const { t } = await useTranslation(locale);
+  const { t } = await getTranslation(locale);
   const { resumeData } = resume;
   const { references } = resumeData ?? {};
 

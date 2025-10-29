@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import puppeteer from "puppeteer";
+import puppeteer, { type Page } from "puppeteer";
 import { type NextRequest, NextResponse } from "next/server";
 import { getResumeData } from "@/lib/resume";
 
@@ -30,7 +30,7 @@ async function getPageContent(url: string) {
   return { page, browser };
 }
 
-async function embedFontsInCss(page: puppeteer.Page, cssText: string, linkUrl: string): Promise<string> {
+async function embedFontsInCss(page: Page, cssText: string, linkUrl: string): Promise<string> {
   const fontFaceRegex = /@font-face\s*{[^}]*}/g;
   const urlRegex = /url\((.*?)\)/g;
   const fontFaceRules = cssText.match(fontFaceRegex);
@@ -45,7 +45,6 @@ async function embedFontsInCss(page: puppeteer.Page, cssText: string, linkUrl: s
           if (urlMatch && urlMatch[1]) {
             const path = urlMatch[1].replace(/['"]/g, '');
             const fontUrl = new URL(path, linkUrl).href;
-            console.log(`Attempting to fetch font from: ${fontUrl}`);
             try {
               const fontResponse = await fetch(fontUrl);
               if (fontResponse.ok) {
@@ -98,7 +97,7 @@ async function getPDF(url: string) {
     try {
       const cssResponse = await fetch(linkUrl);
       if (!cssResponse.ok) return '';
-      let cssText = await cssResponse.text();
+      const cssText = await cssResponse.text();
       return await embedFontsInCss(page, cssText, linkUrl); // Use the helper function
     } catch (e) {
       console.error(`Failed to fetch style for PDF: ${linkUrl}`, e);
@@ -124,7 +123,10 @@ async function getPDF(url: string) {
 
   await browser.close();
 
-  return new NextResponse(pdf, {
+  // Convert the returned Buffer/Uint8Array to a real ArrayBuffer (make a copy to avoid SharedArrayBuffer)
+  const arrayBuffer = new Uint8Array(pdf).slice().buffer;
+
+  return new NextResponse(arrayBuffer, {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="resume.pdf"`,
@@ -145,15 +147,14 @@ async function getHTML(url: string) {
       try {
         const cssResponse = await fetch(linkUrl);
         if (!cssResponse.ok) return '';
-        let cssText = await cssResponse.text();
+        const cssText = await cssResponse.text();
         
-        console.log(`Processing fonts for stylesheet: ${linkUrl}`); // Added console.log
         return await embedFontsInCss(page, cssText, linkUrl); // Use the helper function
-      } catch (e) {
+    } catch (e) {
         console.error(`Failed to fetch style: ${linkUrl}`, e);
-        return '';
-      }
-    }) : [];
+      return '';
+    }
+  }) : [];
 
     const linkedStyles = await Promise.all(stylePromises);
     const allStyles = linkedStyles.join('\n') + '\n' + styles.join('\n');
@@ -220,6 +221,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    console.error(errorMessage)
     return NextResponse.json(
       { error: "Failed to generate download", details: errorMessage },
       { status: 500 }

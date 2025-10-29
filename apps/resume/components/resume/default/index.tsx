@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import DefaultLayout from "./layout";
 import { Resume } from "@/lib/resume";
 

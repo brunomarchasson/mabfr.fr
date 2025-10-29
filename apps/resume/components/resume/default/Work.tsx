@@ -1,12 +1,11 @@
 "use server";
 import { Section } from "./Section";
 import { SectionDetailItem } from "./SectionDetailItem";
-import { useTranslation } from "@/i18n/server";
-import { JSONResume } from "@/types/resume";
+import { getTranslation } from "@/i18n/server";
 import { Resume } from "@/lib/resume";
 
 export const Work = async ({ resume, locale }: { resume: Resume, locale: string }) => {
-  const { t } = await useTranslation(locale);
+  const { t } = await getTranslation(locale);
   const { resumeData } = resume;
   const { work } = resumeData ?? {};
   if (!work) return null;

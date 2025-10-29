@@ -2,24 +2,32 @@ import React from 'react';
 import { useAuth } from './AuthProvider';
 
 export const AuthButton = () => {
-  const { user, isLoading, login, logout } = useAuth();
+  const { session, isLoading, login, logout, register } = useAuth();
 
   const handleLogin = () => {
     login(window.location.href);
   };
 
   const handleLogout = () => {
-    sessionStorage.setItem('post_logout_return_url', window.location.href);
     logout();
+  };
+
+  const handleRegister = () => {
+    register(window.location.href);
   };
 
   if (isLoading) {
     return <button disabled>Loading...</button>;
   }
 
-  if (user) {
+  if (session) {
     return <button onClick={handleLogout}>Logout</button>;
   }
 
-  return <button onClick={handleLogin}>Login</button>;
+  return (
+    <div className="flex gap-2">
+      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleRegister}>Register</button>
+    </div>
+  );
 };

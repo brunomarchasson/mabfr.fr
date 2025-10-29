@@ -16,7 +16,7 @@ const formatDate = (date: string | undefined, locale: string) => {
 
 const AnimatedSection = ({ children, className }: PropsWithChildren<{ className?: string }>) => {
   const ref = useRef<HTMLDivElement>(null);
-  const isVisible = useIntersectionObserver(ref, { threshold: 0.1 });
+  const isVisible = useIntersectionObserver(ref as React.RefObject<Element>, { threshold: 0.1 });
 
   return (
     <div ref={ref} className={`animated-section ${isVisible ? 'is-visible' : ''} ${className || ''}`}>
@@ -44,19 +44,19 @@ const Header = ({ basics }: { basics: JSONResume['basics'] }) => {
   return (
     <div ref={parallaxRef} className="header-container">
       <header className="header">
-        <h1>{basics.name}</h1>
-        <div className="label">{basics.label}</div>
+        <h1>{basics?.name}</h1>
+        <div className="label">{basics?.label}</div>
         <div className="contact">
-          {basics.email && <a href={`mailto:${basics.email}`}>{basics.email}</a>}
-          {basics.phone && <><span>&bull;</span><span>{basics.phone}</span></>}
-          {basics.url && <><span>&bull;</span><a href={basics.url.href} target="_blank" rel="noopener noreferrer">{basics.url.label}</a></>}
+          {basics?.email && <a href={`mailto:${basics.email}`}>{basics?.email}</a>}
+          {basics?.phone && <><span>&bull;</span><span>{basics?.phone}</span></>}
+          {basics?.url && <><span>&bull;</span><a href={basics?.url} target="_blank" rel="noopener noreferrer">{basics?.url}</a></>}
         </div>
       </header>
     </div>
   );
 };
 
-const TimelineSection = ({ items, title, locale }: { items: (JSONResume['work'][0] | JSONResume['education'][0])[], title: string, locale: string }) => (
+const TimelineSection = ({ items, title, locale }: { items: (NonNullable<JSONResume['work']>[number] | NonNullable<JSONResume['education']>[number])[], title: string, locale: string }) => (
   <AnimatedSection className="timeline-section">
     <h2 className="section-title">{title}</h2>
     <div className="timeline-items">
@@ -66,8 +66,13 @@ const TimelineSection = ({ items, title, locale }: { items: (JSONResume['work'][
           <div className="timeline-content">
             <div className="item-header">
               <div>
-                <h3 className="item-title">{'position' in item ? item.position : `${item.studyType}, ${item.area}`}</h3>
-                <div className="item-subtitle">{'name' in item ? item.name : item.institution}</div>
+                <h3 className="item-title">
+                  {'position' in item
+                    ? item.position
+                    : ('institution' in item ? `${item.studyType}${item.area ? `, ${item.area}` : ''}` : '')
+                  }
+                </h3>
+                <div className="item-subtitle">{'institution' in item ? item.institution : ('name' in item ? item.name : '')}</div>
               </div>
               <div className="item-date">
                 {formatDate(item.startDate, locale)} - {formatDate(item.endDate, locale)}
@@ -88,7 +93,7 @@ const TimelineSection = ({ items, title, locale }: { items: (JSONResume['work'][
   </AnimatedSection>
 );
 
-const SkillsSection = ({ items }: { items: JSONResume['skills'] }) => {
+const SkillsSection = ({ items = [] }: { items?: JSONResume['skills'] }) => {
   const { t } = useTranslation();
   return (
     <AnimatedSection className="skills-section">
@@ -98,7 +103,7 @@ const SkillsSection = ({ items }: { items: JSONResume['skills'] }) => {
           <div className="item" key={index}>
             <h3 className="item-title">{skill.name}</h3>
             <div className="skill-keywords">
-              {skill.keywords.map((keyword, i) => <span className="skill-tag" key={i}>{keyword}</span>)}
+              {skill.keywords?.map((keyword, i) => <span className="skill-tag" key={i}>{keyword}</span>)}
             </div>
           </div>
         ))}
@@ -107,7 +112,7 @@ const SkillsSection = ({ items }: { items: JSONResume['skills'] }) => {
   );
 };
 
-const ProjectsSection = ({ items, locale }: { items: JSONResume['projects'], locale: string }) => {
+const ProjectsSection = ({ items=[], locale }: { items: JSONResume['projects'], locale: string }) => {
   const { t } = useTranslation();
   return (
     <AnimatedSection className="projects-section">
@@ -126,7 +131,7 @@ const ProjectsSection = ({ items, locale }: { items: JSONResume['projects'], loc
                 </ul>
               </div>
             )}
-             {item.url && <a href={item.url.href} target="_blank" rel="noopener noreferrer" className="item-subtitle">View Project</a>}
+             {item.url && <a href={item.url} target="_blank" rel="noopener noreferrer" className="item-subtitle">View Project</a>}
           </div>
         ))}
       </div>

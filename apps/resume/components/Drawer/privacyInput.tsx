@@ -5,10 +5,10 @@ import { LockClosedIcon } from "./icons";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-function PrivacyInput({isUnlocked}) {
+function PrivacyInput({isUnlocked}: { isUnlocked: boolean }) {
   const [secret, setSecret] = useState("");
   const { t } = useTranslation();
-  const [token, setToken] = useQueryState("token", { shallow: false });
+  const [, setToken] = useQueryState("token", { shallow: false });
 
 
   const lock = () => {

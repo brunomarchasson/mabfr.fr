@@ -1,10 +1,9 @@
-import React from "react";
-import { IconLib } from "../../icons";
-import { JSONResume } from "@/types/resume";
-import style from "./sidebar.module.css";
 import { Resume } from "@/lib/resume";
-
+import Image from "next/image";
+import style from './sidebar.module.css'
 import IconText from "./IconText";
+import { IconLib } from "@/components/icons";
+import { JSONResume } from "@/types/resume";
 
 type LocationProps = {
   address?: string;
@@ -88,25 +87,25 @@ export async function Sidebar({
   resume,
 }: React.PropsWithChildren<{ resume: Resume }>) {
   const { resumeData } = resume;
-  const { image, name, profiles, url } = resumeData?.basics ?? {};
+  const { image, name, profiles } = resumeData?.basics ?? {};
   return (
     <aside className={style.sidebar}>
       <div className={style.sidebar__head}>
         {image && (
           <div className={style.image_container}>
-            <img
+            <Image
               className={style.image}
               width={248}
               height={248}
               src={image}
-              alt={name}
+              alt={name || "Profile Image"}
             />
           </div>
         )}
         <div className={style.name}>{name}</div>
 
         <div className={style.sidebar__content}>
-          <Contact {...resume} />
+          <Contact resumeData={resumeData} hasAccess={resume.hasAccess} />
           {profiles && (
             <div id={"profiles"} className="no-print">
               {profiles.map((profile) => (

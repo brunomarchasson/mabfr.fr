@@ -16,21 +16,14 @@ export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}): Promise<JSX.Element> {
-  // Read environment variables on the server
-  const config = {
-    authority: process.env.NEXT_PUBLIC_OIDC_AUTHORITY,
-    client_id: process.env.NEXT_PUBLIC_OIDC_CLIENT_ID,
-    redirect_uri: process.env.NEXT_PUBLIC_OIDC_REDIRECT_URI,
-    post_logout_redirect_uri: process.env.NEXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI,
-    silent_redirect_uri: process.env.NEXT_PUBLIC_OIDC_SILENT_REDIRECT_URI,
-    scope: process.env.NEXT_PUBLIC_OIDC_SCOPE,
-  };
+}): Promise<React.ReactElement> {
+  // The AuthProvider now constructs its config internally using environment variables.
+  // No need to pass config as a prop here.
 
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider config={config}>{children}</AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

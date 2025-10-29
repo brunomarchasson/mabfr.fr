@@ -37,14 +37,13 @@ export async function getResumeData(locale: string, token?: string): Promise<Res
 
 
     if (!response.ok) {
-      const errorText = await response.text();
+      await response.text(); // Read the text to consume the response body
       throw new Error(`GitHub API error: ${response.status}`);
     }
 
     const gist = await response.json();
-    console.log( gist.files)
     // Look for the specific file based on locale
-    let resumeFile = gist.files[fileName];
+    const resumeFile = gist.files[fileName];
 
     if (!resumeFile) {
       throw new Error(`Resume file ${fileName} not found in gist`);
@@ -53,13 +52,13 @@ export async function getResumeData(locale: string, token?: string): Promise<Res
     let resumeData: JSONResume;
     try {
       resumeData = JSON.parse(resumeFile.content);
-    } catch (parseError) {
+    } catch {
       throw new Error("Invalid JSON in resume file");
     }
 
     return { resumeData: obfuscateResume(resumeData, hasAccess), hasAccess };
-  } catch (error) {
-    throw error;
+  } catch (_error) {
+    throw _error;
   }
 }
 export const cachedGetResumeData = cache(getResumeData);

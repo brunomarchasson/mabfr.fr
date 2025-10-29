@@ -3,7 +3,7 @@ import path from 'path';
 import { createT } from './utils';
 import { cache } from 'react';
 
-const getMessages = cache(async (locale: string) => {
+export const getMessages = cache(async (locale: string) => {
   const filePath = path.join(process.cwd(), 'public', 'locales', `${locale}.json`);
   try {
     const fileContent = await fs.readFile(filePath, 'utf-8');
@@ -14,7 +14,7 @@ const getMessages = cache(async (locale: string) => {
   }
 });
 
-export async function useTranslation(locale: string) {
+export async function getTranslation(locale: string) {
   const messages = await getMessages(locale);
   return {
     t: createT(messages),

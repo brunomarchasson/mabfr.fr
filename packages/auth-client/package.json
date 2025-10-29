@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "oidc-client-ts": "^3.3.0"
+    "@ory/client": "^1.1.43",
+    "@ory/elements-react": "^1.1.0",
+    "@ory/nextjs": "^1.0.0-rc.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0"

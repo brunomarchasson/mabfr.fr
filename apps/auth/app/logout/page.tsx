@@ -2,17 +2,13 @@
 
 import React, { Suspense, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { authClient } from '@mabru/auth-client';
-
-interface KratosLogoutFlow {
-  logout_url: string;
-  logout_token: string;
-}
+import { AuthClient, AuthClientConfig } from '@mabru/auth-client';
 
 function LogoutHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasHandled = useRef(false);
+  const returnTo = searchParams.get('return_to') || undefined;
 
   useEffect(() => {
     if (hasHandled.current) {
@@ -20,42 +16,17 @@ function LogoutHandler() {
     }
     hasHandled.current = true;
 
-    const logoutChallenge = searchParams.get('logout_challenge');
-
-    if (logoutChallenge) {
-      // This is the first step of the logout, initiated by Hydra/Kratos.
-      fetch(`${process.env.NEXT_PUBLIC_KRATOS_BROWSER_URL}/self-service/logout/browser?challenge=${logoutChallenge}`, {
-        credentials: 'include',
-      })
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error('Failed to fetch Kratos logout flow');
-          }
-          return res.json();
-        })
-        .then((flow: KratosLogoutFlow) => {
-          // The Kratos API returns a URL to complete the logout.
-          if (flow.logout_url) {
-            window.location.href = flow.logout_url;
-          }
-        })
-        .catch((err) => {
-          console.error("Failed to process Kratos logout flow", err);
-          // Fallback redirect
-          router.push(process.env.NEXT_PUBLIC_HUB_URL || '/');
-        });
-    } else {
-      // This is the second step, after Kratos has logged out.
-      // We get the return URL from session storage and redirect back to it.
-      const returnUrl = sessionStorage.getItem('post_logout_return_url');
-      sessionStorage.removeItem('post_logout_return_url');
-      router.push(returnUrl || 'http://localhost/hub/');
-    }
-  }, [router, searchParams]);
+    const config: AuthClientConfig = {
+      kratosPublicUrl: process.env.NEXT_PUBLIC_ORY_KRATOS_PUBLIC_URL || '',
+      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || '',
+    };
+    const client = new AuthClient(config);
+    client.logout(); // The new logout method handles redirection internally
+  }, [router, returnTo]);
 
   return (
     <div>
-      <h1>Finalizing logout...</h1>
+      <h1>Logging out...</h1>
       <p>Please wait.</p>
     </div>
   );

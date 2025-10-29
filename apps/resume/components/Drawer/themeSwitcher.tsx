@@ -63,7 +63,7 @@ export default function ThemeSwitcher() {
           <MoonIcon className="w-5 h-5" />
         </ThemeButton>
         <ThemeButton theme="system">
-          <ComputerDesktopIcon className_="w-5 h-5" />
+          <ComputerDesktopIcon className="w-5 h-5" />
         </ThemeButton>
       </div>
     </div>

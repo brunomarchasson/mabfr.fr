@@ -1,12 +1,7 @@
-
-// @ts-nocheck
 interface AuthConfig {
-  authority: string;
-  clientId: string;
-  redirectUri: string;
-  postLogoutRedirectUri: string;
-  silentRedirectUri: string;
-  scope: string;
+  kratosPublicUrl: string;
+  hydraAdminUrl?: string; // Hydra might not be directly used by AuthClient for user-facing flows
+  baseUrl: string; // Base URL of the application, for redirects
 }
 
 function getEnv(name: string, fallback?: string): string {
@@ -18,23 +13,16 @@ function getEnv(name: string, fallback?: string): string {
 }
 
 // Verify and log environment variables at startup
-console.log("--- Auth Configuration ---");
+console.log("--- Auth Configuration (Ory) ---");
 
 const config: AuthConfig = {
-  authority: getEnv("NEXT_PUBLIC_OIDC_AUTHORITY"),
-  clientId: getEnv("NEXT_PUBLIC_OIDC_CLIENT_ID"),
-  redirectUri: getEnv("NEXT_PUBLIC_OIDC_REDIRECT_URI"),
-  postLogoutRedirectUri: getEnv("NEXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI"),
-  silentRedirectUri: getEnv("NEXT_PUBLIC_OIDC_SILENT_REDIRECT_URI"),
-  scope: getEnv("NEXT_PUBLIC_OIDC_SCOPE", "openid profile email offline_access"),
+  kratosPublicUrl: getEnv("NEXT_PUBLIC_ORY_KRATOS_PUBLIC_URL"),
+  // hydraAdminUrl: getEnv("NEXT_PUBLIC_ORY_HYDRA_ADMIN_URL"), // Uncomment if Hydra Admin API is needed
+  baseUrl: getEnv("NEXT_PUBLIC_BASE_URL"),
 };
 
-console.log(`Authority: ${config.authority}`);
-console.log(`Client ID: ${config.clientId}`);
-console.log(`Redirect URI: ${config.redirectUri}`);
-console.log(`Post Logout Redirect URI: ${config.postLogoutRedirectUri}`);
-console.log(`Silent Redirect URI: ${config.silentRedirectUri}`);
-console.log(`Scope: ${config.scope}`);
+console.log(`Kratos Public URL: ${config.kratosPublicUrl}`);
+console.log(`Base URL: ${config.baseUrl}`);
 console.log("--------------------------");
 
 

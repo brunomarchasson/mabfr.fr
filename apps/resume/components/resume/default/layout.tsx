@@ -2,7 +2,6 @@
 import localFont from "next/font/local";
 import "./style.css";
 import styles from "./layout.module.css";
-import type { JSONResume } from "@/types/resume";
 import { Sidebar } from "./Sidebar";
 import { Skills } from "./Skills";
 import QRCode from "./QRCode";

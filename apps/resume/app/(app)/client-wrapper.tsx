@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 interface ClientWrapperProps {
   children: ReactNode;
   lang: string;
-  messages: Record<string, any>;
+  messages: Record<string, string>;
 }
 
 export default function ClientWrapper({ children, lang, messages }: ClientWrapperProps) {

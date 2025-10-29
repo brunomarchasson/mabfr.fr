@@ -3,6 +3,7 @@ import { Resume } from '@/lib/resume';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import './terminal.css';
 import { useTypewriter } from './useTypewriter';
+import { JSONResume } from '@/types/resume';
 
 const BlinkingCursor = () => <span className="cursor"></span>;
 const Divider = () => <p className="divider">------------------------------------------------------------</p>;
@@ -39,7 +40,7 @@ const StaticCommand = ({ command, children }: { command: string; children: React
     </div>
 );
 
-const ResumeTerminal = ({ resume, locale }: { resume: Resume; locale: string; }) => {
+const ResumeTerminal = ({ resume }: { resume: Resume; locale: string; }) => {
   const { basics, work, skills, projects, education, languages } = resume.resumeData;
   const [commandStep, setCommandStep] = useState(0);
 
@@ -76,8 +77,8 @@ const ResumeTerminal = ({ resume, locale }: { resume: Resume; locale: string; })
             <>
                 <Divider />
                 <div className="output-work-list">
-                    {(work ?? []).map((job: any) => (
-                        <div key={job.name + job.startDate} className="output-work-item">
+                    {(work ?? []).map((job) => (
+                        <div key={`${job?.name} ${job.startDate}`} className="output-work-item">
                             <p><span className="position">{job.position}</span> @ {job.name}</p>
                             <p className="date">{job.startDate} - {job.endDate}</p>
                             <ul className="highlights">
@@ -106,7 +107,7 @@ const ResumeTerminal = ({ resume, locale }: { resume: Resume; locale: string; })
             <>
                 <Divider />
                 <div className="output-projects">
-                    {(projects ?? []).map((p: any) => <p key={p.name}><span className="text-accent">{p.name}</span> - {p.description}</p>)}
+                    {(projects ?? []).map((p) => <p key={p.name}><span className="text-accent">{p.name}</span> - {p.description}</p>)}
                 </div>
             </>
         )
@@ -117,7 +118,7 @@ const ResumeTerminal = ({ resume, locale }: { resume: Resume; locale: string; })
             <>
                 <Divider />
                 <div className="output-education">
-                    {(education ?? []).map((e: any) => <p key={e.institution}><span className="font-bold">{e.institution}</span>: {e.studyType}, {e.area} (<span className="date">{e.endDate}</span>)</p>)}
+                    {(education ?? []).map((e) => <p key={e.institution}><span className="font-bold">{e.institution}</span>: {e.studyType}, {e.area} (<span className="date">{e.endDate}</span>)</p>)}
                 </div>
             </>
         )
@@ -128,7 +129,7 @@ const ResumeTerminal = ({ resume, locale }: { resume: Resume; locale: string; })
             <>
                 <Divider />
                 <div className="output-languages">
-                    {(languages ?? []).map((l: any) => <p key={l.language}>{l.language} ({l.fluency})</p>)}
+                    {(languages ?? []).map((l) => <p key={l.language}>{l.language} ({l.fluency})</p>)}
                 </div>
             </>
         )

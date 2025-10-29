@@ -2,7 +2,6 @@
 
 import React from "react";
 import {
-  XIcon,
   PaintBrushIcon,
   CogIcon,
   DownloadIcon
@@ -11,10 +10,8 @@ import { useTranslation } from "@/i18n/provider";
 import ThemeSwitcher from "./themeSwitcher";
 import LocaleSwitcher from "./localeSwitcher";
 import PrivacyInput from "./privacyInput";
-import { useDrawer } from ".";
 import DownloadRemsume from "./download";
 import VisualStyleSwitcher from "./styleSwitcher";
-import { Button } from "../ui/button";
 import { Resume } from "@/lib/resume";
 
 export type VisualStyle = "default" | "modern" | "paper" | "print";
@@ -36,7 +33,6 @@ const DrawerContents: React.FC<{ resume: Resume, lang: string, token?: string }>
   lang,
   token
 }) => {
-  const { state: drawerState, closeDrawer } = useDrawer();
   const { t } = useTranslation();
   
   return (

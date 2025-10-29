@@ -1,3 +1,5 @@
+import { DateTime } from "luxon"
+
 export interface JSONResume {
   basics?: {
     name?: string
@@ -28,6 +30,7 @@ export interface JSONResume {
     endDate?: string
     summary?: string
     highlights?: string[]
+    keywords?: string[]
     location?: string
   }>
   volunteer?: Array<{

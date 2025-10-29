@@ -2,7 +2,7 @@
 
 import { TagList } from "./Tag";
 import { IconLib } from "../../icons";
-import { useTranslation } from "@/i18n/server";
+import { getTranslation } from "@/i18n/server";
 import { FormatDate } from "@/lib/dateHelpers";
 import styles from "./SectionDetailItem.module.css";
 import IconText from "./IconText";
@@ -36,7 +36,7 @@ export const SectionDetailItem = async ({
   dateFormat,
   locale,
 }: Props) => {
-  const { t } = await useTranslation(locale);
+  const { t } = await getTranslation(locale);
 
   return (
     <li className={styles.sectionDetailItem}>

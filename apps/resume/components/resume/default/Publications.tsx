@@ -1,10 +1,10 @@
-import { useTranslation } from "@/i18n/server";
+import { getTranslation } from "@/i18n/server";
 import { Section } from "./Section";
 import { SectionDetailItem } from "./SectionDetailItem";
 import { Resume } from "@/lib/resume";
 
 export const Publications = async ({ resume, locale }: { resume: Resume, locale: string }) => {
-  const { t } = await useTranslation(locale);
+  const { t } = await getTranslation(locale);
   const { resumeData } = resume;
   const { publications } = resumeData ?? {};
 

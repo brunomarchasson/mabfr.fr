@@ -17,7 +17,6 @@ import {
 } from "framer-motion";
 import { AnimatedMenuIcon } from "./icons";
 import { Button } from "../ui/button";
-import { Resume } from "@/lib/resume";
 
 //==============================================================================
 // 1. CONTEXT, HOOK & PROVIDER (The new <Drawer> component)
@@ -73,7 +72,7 @@ interface DrawerContextType {
   state: DrawerState;
   openDrawer: () => void;
   closeDrawer: () => void;
-  x: ReturnType<typeof useMotionValue>;
+  x: ReturnType<typeof useMotionValue<number>>;
 }
 
 const DrawerContext = createContext<DrawerContextType | undefined>(undefined);
