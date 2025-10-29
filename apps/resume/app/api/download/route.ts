@@ -30,6 +30,45 @@ async function getPageContent(url: string) {
   return { page, browser };
 }
 
+async function embedFontsInCss(page: puppeteer.Page, cssText: string, linkUrl: string): Promise<string> {
+  const fontFaceRegex = /@font-face\s*{[^}]*}/g;
+  const urlRegex = /url\((.*?)\)/g;
+  const fontFaceRules = cssText.match(fontFaceRegex);
+
+  if (fontFaceRules) {
+    for (const rule of fontFaceRules) {
+      let newRule = rule;
+      const urls = rule.match(urlRegex);
+      if (urls) {
+        for (const urlString of urls) {
+          const urlMatch = urlString.match(/url\((.*?)\)/);
+          if (urlMatch && urlMatch[1]) {
+            const path = urlMatch[1].replace(/['"]/g, '');
+            const fontUrl = new URL(path, linkUrl).href;
+            console.log(`Attempting to fetch font from: ${fontUrl}`);
+            try {
+              const fontResponse = await fetch(fontUrl);
+              if (fontResponse.ok) {
+                const fontBuffer = await fontResponse.arrayBuffer();
+                const base64Font = Buffer.from(fontBuffer).toString('base64');
+                const mimeType = fontResponse.headers.get('content-type') || 'font/otf';
+                const newDataUri = `url(data:${mimeType};base64,${base64Font})`;
+                newRule = newRule.replace(urlString, newDataUri);
+              } else {
+                console.error(`Failed to fetch font: ${fontUrl}, Status: ${fontResponse.status}`);
+              }
+            } catch (e) {
+              console.error(`Failed to fetch font: ${fontUrl}, Error: ${e}`);
+            }
+          }
+        }
+      }
+      cssText = cssText.replace(rule, newRule);
+    }
+  }
+  return cssText;
+}
+
 async function getPDF(url: string) {
   const { page, browser } = await getPageContent(url);
 
@@ -50,6 +89,32 @@ async function getPDF(url: string) {
       }
     `
   });
+
+  // --- Start of font embedding logic for PDF ---
+  const links = await page.$$eval('link[rel="stylesheet"]', links => links.map(link => link.href));
+  const styles = await page.$$eval('style', styles => styles.map(style => style.innerHTML));
+
+  const stylePromises = Array.isArray(links) ? links.map(async (linkUrl) => {
+    try {
+      const cssResponse = await fetch(linkUrl);
+      if (!cssResponse.ok) return '';
+      let cssText = await cssResponse.text();
+      return await embedFontsInCss(page, cssText, linkUrl); // Use the helper function
+    } catch (e) {
+      console.error(`Failed to fetch style for PDF: ${linkUrl}`, e);
+      return '';
+    }
+  }) : [];
+
+  const linkedStyles = await Promise.all(stylePromises);
+  const allStyles = linkedStyles.join('\n') + '\n' + styles.join('\n');
+
+  // Inject the processed CSS with embedded fonts
+  await page.addStyleTag({ content: allStyles });
+
+  // Wait for fonts to be loaded
+  await page.evaluate(() => document.fonts.ready);
+  // --- End of font embedding logic for PDF ---
 
   const pdf = await page.pdf({
     format: "A4",
@@ -82,39 +147,8 @@ async function getHTML(url: string) {
         if (!cssResponse.ok) return '';
         let cssText = await cssResponse.text();
         
-        const fontFaceRegex = /@font-face\s*{[^}]*}/g;
-        const urlRegex = /url\((.*?)\)/g;
-        const fontFaceRules = cssText.match(fontFaceRegex);
-
-        if (fontFaceRules) {
-            for (const rule of fontFaceRules) {
-                let newRule = rule;
-                const urls = rule.match(urlRegex);
-                if (urls) {
-                    for (const urlString of urls) {
-                        const urlMatch = urlString.match(/url\((.*?)\)/);
-                        if (urlMatch && urlMatch[1]) {
-                            const path = urlMatch[1].replace(/['"]/g, '');
-                            const fontUrl = new URL(path, linkUrl).href;
-                            try {
-                                const fontResponse = await fetch(fontUrl);
-                                if (fontResponse.ok) {
-                                    const fontBuffer = await fontResponse.arrayBuffer();
-                                    const base64Font = Buffer.from(fontBuffer).toString('base64');
-                                    const mimeType = fontResponse.headers.get('content-type') || 'font/otf';
-                                    const newDataUri = `url(data:${mimeType};base64,${base64Font})`;
-                                    newRule = newRule.replace(urlString, newDataUri);
-                                }
-                            } catch (e) {
-                                console.error(`Failed to fetch font: ${fontUrl}`, e);
-                            }
-                        }
-                    }
-                }
-                cssText = cssText.replace(rule, newRule);
-            }
-        }
-        return cssText;
+        console.log(`Processing fonts for stylesheet: ${linkUrl}`); // Added console.log
+        return await embedFontsInCss(page, cssText, linkUrl); // Use the helper function
       } catch (e) {
         console.error(`Failed to fetch style: ${linkUrl}`, e);
         return '';

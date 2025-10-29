@@ -39,7 +39,7 @@ const SimpleLayout = async ({ resume, locale }: { resume: Resume; locale: string
     <div id="resume-content" className="bg-background font-sans text-foreground print:text-black">
       <div className="max-w-4xl mx-auto p-8 sm:p-10 md:p-12 print:p-0">
         {/* Header */}
-        <header className="text-left mb-8 border-b border-border pb-6">
+        <header className="text-left border-border pb-6">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-1 text-foreground print:text-[28px]">{basics?.name}</h1>
           <p className="text-lg md:text-xl text-muted-foreground print:text-[16px]">{basics?.label}</p>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm mt-4 text-muted-foreground">
@@ -68,8 +68,8 @@ const SimpleLayout = async ({ resume, locale }: { resume: Resume; locale: string
         {education?.length > 0 && (
           <Section title={t('Resume.Education')}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {education.map((edu: any) => (
-                <div key={edu.institution} className="break-inside-avoid">
+              {education.map((edu: any, index) => (
+                <div key={index} className="break-inside-avoid">
                    <header className="flex justify-between items-baseline">
                       <h3 className="text-lg font-semibold text-foreground print:text-[13px]">{edu.institution}</h3>
                       <div className="text-sm text-muted-foreground">{FormatDate(edu.endDate, "yyyy", locale)}</div>

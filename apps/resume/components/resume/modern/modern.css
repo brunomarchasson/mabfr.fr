@@ -1,6 +1,5 @@
-
 /* =================================================================
-   MODERN RESUME STYLE V7 (Direct Implementation)
+   MODERN RESUME STYLE - REBUILT FOR MODERN & IMPRESSIVE (Attempt 4 - Shadcn Inspired)
    ================================================================= */
 
 @property --angle {
@@ -9,21 +8,38 @@
   inherits: false;
 }
 
-@keyframes fade-in-down {
-    from { opacity: 0; transform: translateY(-10px); }
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scale-in {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
 }
 
 .modern-layout {
   color: var(--foreground);
+  background-color: var(--background);
+  font-family: "Gill Sans", sans-serif; /* Ensure font is applied */
+  line-height: 1.6;
   padding: 4rem 0;
   overflow-x: hidden;
   position: relative;
+  min-height: 100vh;
 
-  /* Direct Texture Implementation */
-  background-color: var(--background);
-  background-image: linear-gradient(45deg, oklch(from var(--border) l a b / 0.07) 1px, transparent 0), linear-gradient(-45deg, oklch(from var(--border) l a b / 0.07) 1px, transparent 0);
-  background-size: 16px 16px;
+  /* Dynamic background texture */
+  background-image: radial-gradient(circle at 100% 150%, oklch(from var(--primary) l c h / 0.1) 0%, transparent 25%),
+                    radial-gradient(circle at 0% 150%, oklch(from var(--secondary) l c h / 0.1) 0%, transparent 25%),
+                    radial-gradient(circle at 50% 50%, oklch(from var(--border) l a b / 0.05) 0%, transparent 50%);
+  background-size: 50% 50%, 50% 50%, 100% 100%;
+  background-position: 0 0, 100% 0, 0 0;
+  background-repeat: no-repeat;
 }
 
 .modern-layout .container {
@@ -32,65 +48,221 @@
     display: grid;
     gap: 4rem;
     width: 100%;
-    max-width: 800px;
+    max-width: 1000px; /* Generous max-width */
     margin: 0 auto;
     padding: 0 2rem;
 }
 
 /* -----------------
- * Header & Parallax
+ * Header
  * ----------------- */
 .modern-layout .header-container {
   text-align: center;
-  will-change: transform;
-  /* Spacing is now on the container */
-  padding-bottom: 2rem;
+  will-change: transform; /* For parallax effect */
+  padding-bottom: 3rem;
 }
 
-.modern-layout .header h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; color: var(--foreground); margin-bottom: 0.5rem; animation: fade-in-down 600ms ease-out; }
-.modern-layout .header .label { font-size: 1.2rem; font-weight: 500; color: var(--primary); animation: fade-in-down 600ms ease-out 200ms; animation-fill-mode: both; }
-.modern-layout .header .contact { margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.5rem; font-size: 0.9rem; opacity: 0.8; animation: fade-in-down 600ms ease-out 400ms; animation-fill-mode: both; }
-.modern-layout .header .contact a:hover { color: var(--primary); }
+.modern-layout .header h1 {
+  font-size: 5rem; /* Impressive size */
+  font-weight: 900;
+  letter-spacing: -4px;
+  color: var(--foreground);
+  margin-bottom: 0.75rem;
+  animation: fade-in-up 0.8s ease-out;
+}
+.modern-layout .header .label {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--primary);
+  animation: fade-in-up 0.8s ease-out 0.2s both;
+}
+.modern-layout .header .contact {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 1.05rem;
+  opacity: 0.8;
+  animation: fade-in-up 0.8s ease-out 0.4s both;
+}
+.modern-layout .header .contact a {
+  color: var(--foreground);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.modern-layout .header .contact a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.modern-layout .header .contact span {
+  color: var(--muted-foreground);
+}
 
 /* -----------------
  * Section Animation
  * ----------------- */
-.modern-layout .animated-section { opacity: 0; transform: translateY(40px); transition: transform 600ms ease, opacity 600ms ease; }
-.modern-layout .animated-section.is-visible { opacity: 1; transform: translateY(0); }
+.modern-layout .animated-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.modern-layout .animated-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 /* -----------------
- * Timeline Section
+ * Timeline Section - SHADCN INSPIRED
  * ----------------- */
-.modern-layout .timeline-section { position: relative; padding-left: 2.5rem; }
-.modern-layout .timeline-section::before { content: ''; position: absolute; left: 0.5rem; top: 0.5rem; bottom: 0.5rem; width: 2px; background-color: var(--border); transform-origin: top; transform: scaleY(0); transition: transform 500ms ease-out; }
-.modern-layout .timeline-section.is-visible::before { transform: scaleY(1); }
-.modern-layout .timeline-title { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-bottom: 2rem; }
-.modern-layout .timeline-item { position: relative; margin-bottom: 2rem; opacity: 0; transform: translateX(-20px); transition: opacity 400ms ease, transform 400ms ease; }
-.modern-layout .timeline-section.is-visible .timeline-item { opacity: 1; transform: translateX(0); }
-.modern-layout .timeline-section.is-visible .timeline-item:nth-child(2) { transition-delay: 200ms; }
-.modern-layout .timeline-section.is-visible .timeline-item:nth-child(3) { transition-delay: 400ms; }
-.modern-layout .timeline-section.is-visible .timeline-item:nth-child(4) { transition-delay: 600ms; }
+.modern-layout .timeline-section {
+  position: relative;
+  padding-left: 2rem; /* Space for the line and dots */
+}
+.modern-layout .timeline-section::before {
+  content: '';
+  position: absolute;
+  left: 1rem; /* Center the line within the padding */
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--border);
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 0.8s ease-out;
+}
+.modern-layout .timeline-section.is-visible::before {
+  transform: scaleY(1);
+}
+.modern-layout .timeline-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--foreground);
+  margin-bottom: 2.5rem;
+  position: sticky;
+  top: 0;
+  background: var(--background);
+  padding: 1rem 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+}
+.modern-layout .timeline-items {
+  display: flex;
+  flex-direction: column;
+}
+.modern-layout .timeline-item {
+  display: grid;
+  grid-template-columns: 20px 1fr; /* Column for dot and column for content */
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.modern-layout .timeline-section.is-visible .timeline-item {
+  opacity: 1;
+  transform: translateX(0);
+}
+.modern-layout .timeline-section.is-visible .timeline-item:nth-child(2) { transition-delay: 100ms; }
+.modern-layout .timeline-section.is-visible .timeline-item:nth-child(3) { transition-delay: 200ms; }
+.modern-layout .timeline-section.is-visible .timeline-item:nth-child(4) { transition-delay: 300ms; }
+.modern-layout .timeline-section.is-visible .timeline-item:nth-child(5) { transition-delay: 400ms; }
 .modern-layout .timeline-item:last-child { margin-bottom: 0; }
-.modern-layout .timeline-item::before { content: ''; position: absolute; left: -2.5rem; top: 0.5rem; width: 1rem; height: 1rem; border-radius: 50%; background-color: var(--secondary); border: 3px solid var(--background); transform: scale(0); transition: transform 300ms ease-out 200ms; }
-.modern-layout .timeline-section.is-visible .timeline-item::before { transform: scale(1); }
+
+.modern-layout .timeline-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--secondary);
+  border: 4px solid var(--background);
+  justify-self: center;
+  align-self: flex-start;
+  margin-top: 0.4rem; /* Align dot with text */
+  transform: scale(0);
+  animation: scale-in 0.4s ease-out 0.2s forwards;
+}
+.modern-layout .timeline-section.is-visible .timeline-dot { animation-play-state: running; }
+
+.modern-layout .timeline-content {
+  padding-top: 0.2rem; /* Adjust content to align with dot */
+}
 
 /* Generic Item styles */
-.modern-layout .item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem; }
-.modern-layout .item-title { font-size: 1.1rem; font-weight: 600; color: var(--foreground); }
-.modern-layout .item-subtitle { font-size: 0.9rem; color: var(--muted-foreground); }
-.modern-layout .item-date { font-size: 0.85rem; color: var(--muted-foreground); white-space: nowrap; }
-.modern-layout .summary, .modern-layout .highlights { font-size: 0.95rem; line-height: 1.6; margin-top: 0.5rem; color: var(--muted-foreground); }
-.modern-layout .highlights ul { list-style: none; padding-left: 0; margin-top: 0.5rem; }
-.modern-layout .highlights li::before { content: '›'; color: var(--secondary); margin-right: 0.5rem; font-weight: 700; }
+.modern-layout .item-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+.modern-layout .item-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+.modern-layout .item-subtitle {
+  font-size: 1.05rem;
+  color: var(--muted-foreground);
+}
+.modern-layout .item-date {
+  font-size: 0.95rem;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.modern-layout .summary, .modern-layout .highlights {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-top: 0.75rem;
+  color: var(--foreground);
+}
+.modern-layout .highlights ul {
+  list-style: none; /* Remove default bullets */
+  padding-left: 0;
+  margin-top: 0.75rem;
+}
+.modern-layout .highlights li::before {
+  content: '•';
+  color: var(--secondary);
+  margin-right: 0.75rem;
+  font-weight: 700;
+}
 
 /* -----------------
  * Skills Section
  * ----------------- */
-.modern-layout .skills-section .section-title { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-bottom: 1.5rem; }
-.modern-layout .skills-list { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-.modern-layout .skill-tag { background-color: var(--muted); color: var(--muted-foreground); padding: 0.35rem 1rem; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; transition: all 200ms ease; opacity: 0; transform: translateY(10px); }
-.modern-layout .skill-tag:hover { background-color: var(--secondary); color: var(--secondary-foreground); }
-.modern-layout .skills-section.is-visible .skill-tag { opacity: 1; transform: translateY(0); }
+.modern-layout .skills-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--foreground);
+  margin-bottom: 2rem;
+}
+.modern-layout .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.modern-layout .skill-tag {
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  padding: 0.4rem 1.2rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  opacity: 0;
+  transform: translateY(15px);
+}
+.modern-layout .skill-tag:hover {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: var(--shadow-sm);
+}
+.modern-layout .skills-section.is-visible .skill-tag {
+  opacity: 1;
+  transform: translateY(0);
+}
 .modern-layout .skills-section.is-visible .skill-tag:nth-child(2) { transition-delay: 50ms; }
 .modern-layout .skills-section.is-visible .skill-tag:nth-child(3) { transition-delay: 100ms; }
 .modern-layout .skills-section.is-visible .skill-tag:nth-child(4) { transition-delay: 150ms; }
@@ -99,17 +271,178 @@
 /* -----------------
  * Projects Section (Frosted + Animated Cards)
  * ----------------- */
-.modern-layout .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-.modern-layout .project-card { --angle: 0deg; position: relative; border-radius: var(--radius-lg); padding: 1.5rem; border: 1px solid var(--border); background-color: oklch(from var(--card) l a b / 0.6); backdrop-filter: blur(12px); box-shadow: var(--shadow-sm); transition: transform 200ms ease, box-shadow 200ms ease; }
-.modern-layout .project-card::before { content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; background: conic-gradient(from var(--angle), var(--secondary), var(--primary), var(--secondary)) 0 0 / 100% 100% no-repeat; transition: --angle 500ms ease, opacity 300ms ease; opacity: 0; }
-.modern-layout .project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: transparent; }
-.modern-layout .project-card:hover::before { --angle: 360deg; opacity: 1; }
+.modern-layout .projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+.modern-layout .project-card {
+  --angle: 0deg;
+  position: relative;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  border: 1px solid var(--border);
+  background-color: oklch(from var(--card) l a b / 0.7);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  overflow: hidden;
+}
+.modern-layout .project-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(from var(--angle), var(--secondary), var(--primary), var(--secondary)) 0 0 / 100% 100% no-repeat;
+  transition: --angle 1s linear, opacity 0.4s ease;
+  opacity: 0;
+}
+.modern-layout .project-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+.modern-layout .project-card:hover::before {
+  --angle: 360deg;
+  opacity: 1;
+}
+.modern-layout .project-card .item-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.modern-layout .project-card .item-subtitle {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* =================================================================
+   RESPONSIVE STYLES
+   ================================================================= */
+@media (max-width: 1024px) {
+  .modern-layout .container {
+    max-width: 768px;
+    padding: 0 1.5rem;
+  }
+  .modern-layout .header h1 { font-size: 4rem; }
+  .modern-layout .header .label { font-size: 1.4rem; }
+  .modern-layout .timeline-title { font-size: 2.2rem; }
+  .modern-layout .skills-section .section-title { font-size: 2.2rem; }
+  .modern-layout .projects-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  .modern-layout {
+    padding: 2rem 0;
+  }
+  .modern-layout .container {
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  .modern-layout .header h1 { font-size: 3rem; letter-spacing: -2px; }
+  .modern-layout .header .label { font-size: 1.2rem; }
+  .modern-layout .header .contact { flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+  .modern-layout .timeline-section { padding-left: 1.5rem; }
+  .modern-layout .timeline-section::before { left: 0.75rem; }
+  .modern-layout .timeline-item { grid-template-columns: 15px 1fr; gap: 1rem; margin-bottom: 2rem; }
+  .modern-layout .timeline-dot { width: 10px; height: 10px; border: 3px solid var(--background); margin-top: 0.3rem; }
+  .modern-layout .timeline-content { padding-top: 0; }
+  .modern-layout .timeline-title { font-size: 1.8rem; margin-bottom: 1.5rem; padding: 0.5rem 0; }
+  .modern-layout .item-title { font-size: 1.2rem; }
+  .modern-layout .item-subtitle { font-size: 0.9rem; }
+  .modern-layout .item-date { font-size: 0.8rem; }
+  .modern-layout .summary, .modern-layout .highlights { font-size: 0.9rem; }
+  .modern-layout .skills-section .section-title { font-size: 1.8rem; margin-bottom: 1.5rem; }
+  .modern-layout .skills-list { gap: 0.5rem; }
+  .modern-layout .skill-tag { padding: 0.3rem 0.8rem; font-size: 0.85rem; }
+  .modern-layout .projects-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .modern-layout .project-card { padding: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .modern-layout .header h1 { font-size: 2.5rem; letter-spacing: -1px; }
+  .modern-layout .header .label { font-size: 1rem; }
+  .modern-layout .timeline-section { padding-left: 1rem; }
+  .modern-layout .timeline-section::before { left: 0.5rem; }
+  .modern-layout .timeline-item { grid-template-columns: 12px 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .modern-layout .timeline-dot { width: 8px; height: 8px; border: 2px solid var(--background); margin-top: 0.2rem; }
+  .modern-layout .timeline-title { font-size: 1.5rem; margin-bottom: 1rem; }
+  .modern-layout .skills-section .section-title { font-size: 1.5rem; margin-bottom: 1rem; }
+}
 
 /* =================================================================
    PRINT STYLES
    ================================================================= */
 @media print {
-  .modern-layout { background-image: none; }
-  .modern-layout .timeline-section::before, .modern-layout .timeline-item::before { display: none; }
-  .modern-layout .project-card { backdrop-filter: none; }
+  .modern-layout {
+    background-image: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    overflow: visible;
+    font-size: 10pt; /* Smaller base font size for print */
+  }
+  .modern-layout .container {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    gap: 1rem;
+  }
+  .modern-layout .header-container { padding-bottom: 1rem; }
+  .modern-layout .header h1 { font-size: 2rem; letter-spacing: normal; margin-bottom: 0.25rem; }
+  .modern-layout .header .label { font-size: 1rem; }
+  .modern-layout .header .contact { margin-top: 0.5rem; font-size: 0.8rem; gap: 0.5rem; }
+  .modern-layout .animated-section { opacity: 1 !important; transform: none !important; transition: none !important; margin-bottom: 1rem; }
+  .modern-layout .timeline-section {
+    padding-left: 1.5rem; /* Reduced padding for print */
+  }
+  .modern-layout .timeline-section::before { display: none; } /* Hide animated line for print */
+  .modern-layout .timeline-item {
+    margin-bottom: 1rem;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    grid-template-columns: 15px 1fr; /* Adjust grid for print */
+    gap: 0.5rem;
+  }
+  .modern-layout .timeline-dot {
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--background);
+    animation: none !important;
+    margin-top: 0.3rem;
+  }
+  .modern-layout .timeline-title { font-size: 1.5rem; margin-bottom: 1rem; padding: 0.5rem 0; border-bottom: none; }
+  .modern-layout .item-title { font-size: 1.1rem; }
+  .modern-layout .item-subtitle, .modern-layout .item-date { font-size: 0.8rem; }
+  .modern-layout .summary, .modern-layout .highlights { font-size: 0.9rem; line-height: 1.5; margin-top: 0.25rem; }
+  .modern-layout .highlights ul {
+    list-style: none; /* Ensure no default bullets */
+    padding-left: 0;
+  }
+  .modern-layout .highlights li::before { margin-right: 0.25rem; }
+
+  .modern-layout .skills-list { gap: 0.5rem; }
+  .modern-layout .skill-tag { padding: 0.2rem 0.6rem; font-size: 0.75rem; }
+
+  .modern-layout .projects-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .modern-layout .project-card {
+    padding: 1rem;
+    box-shadow: none;
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    backdrop-filter: none;
+    transform: none !important;
+    transition: none !important;
+  }
+  .modern-layout .project-card::before { display: none; }
+  .modern-layout .project-card .item-title { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .modern-layout .project-card .item-subtitle { font-size: 0.8rem; }
+
+  /* Ensure all text is black for print */
+  .modern-layout, .modern-layout * {
+    color: #000 !important;
+    background-color: #fff !important;
+  }
+  .modern-layout a { text-decoration: underline !important; }
 }

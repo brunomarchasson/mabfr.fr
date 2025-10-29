@@ -58,12 +58,12 @@ export default function VisualStyleSwitcher() {
         <VisualStyleButton visualStyle="default">
           <ViewColumnsIcon className="w-5 h-5 mr-2" /> {t("Drawer.default")}
         </VisualStyleButton>
-        <VisualStyleButton visualStyle="modern">
+        {/* <VisualStyleButton visualStyle="modern">
           <SparklesIcon className="w-5 h-5 mr-2" /> {t("Drawer.modern")}
         </VisualStyleButton>
         <VisualStyleButton visualStyle="terminal">
           <CodeBracketIcon className="w-5 h-5 mr-2" /> {t("Drawer.terminal")}
-        </VisualStyleButton>
+        </VisualStyleButton> */}
         <VisualStyleButton visualStyle="simple">
           <PrinterIcon className="w-5 h-5 mr-2" /> {t("Drawer.simple")}
         </VisualStyleButton>

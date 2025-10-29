@@ -1,7 +1,7 @@
 'use client';
 import React, { useRef, useEffect, PropsWithChildren } from 'react';
-import './modern.css';
-import type { Resume } from '@/types/resume';
+import './modern.css'; // Keep modern.css
+import type { JSONResume } from '@/types/resume';
 import { useTranslation } from '@/i18n/provider';
 import { useIntersectionObserver } from '@/lib/hooks';
 
@@ -27,7 +27,7 @@ const AnimatedSection = ({ children, className }: PropsWithChildren<{ className?
 
 // --- LAYOUT & SECTIONS ---
 
-const Header = ({ basics }: { basics: Resume['basics'] }) => {
+const Header = ({ basics }: { basics: JSONResume['basics'] }) => {
   const parallaxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const Header = ({ basics }: { basics: Resume['basics'] }) => {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
 
   return (
     <div ref={parallaxRef} className="header-container">
@@ -56,51 +56,58 @@ const Header = ({ basics }: { basics: Resume['basics'] }) => {
   );
 };
 
-const TimelineSection = ({ items, title, locale }: { items: (Resume['work'][0] | Resume['education'][0])[], title: string, locale: string }) => (
+const TimelineSection = ({ items, title, locale }: { items: (JSONResume['work'][0] | JSONResume['education'][0])[], title: string, locale: string }) => (
   <AnimatedSection className="timeline-section">
-    <h2 className="timeline-title">{title}</h2>
-    {items.map((item, index) => (
-      <div className="timeline-item" key={index}>
-        <div className="item-header">
-          <div>
-            <h3 className="item-title">{'position' in item ? item.position : `${item.studyType}, ${item.area}`}</h3>
-            <div className="item-subtitle">{'name' in item ? item.name : item.institution}</div>
-          </div>
-          <div className="item-date">
-            {formatDate(item.startDate, locale)} - {formatDate(item.endDate, locale)}
+    <h2 className="section-title">{title}</h2>
+    <div className="timeline-items">
+      {items.map((item, index) => (
+        <div className="timeline-item" key={index}>
+          <div className="timeline-dot"></div>
+          <div className="timeline-content">
+            <div className="item-header">
+              <div>
+                <h3 className="item-title">{'position' in item ? item.position : `${item.studyType}, ${item.area}`}</h3>
+                <div className="item-subtitle">{'name' in item ? item.name : item.institution}</div>
+              </div>
+              <div className="item-date">
+                {formatDate(item.startDate, locale)} - {formatDate(item.endDate, locale)}
+              </div>
+            </div> {/* Closing item-header */}
+            {'summary' in item && item.summary && <div className="summary">{item.summary}</div>}
+            {'highlights' in item && item.highlights && (
+              <div className="highlights">
+                <ul>
+                  {item.highlights.map((highlight, i) => <li key={i}>{highlight}</li>)}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
-        {'summary' in item && item.summary && <div className="summary">{item.summary}</div>}
-        {'highlights' in item && item.highlights && (
-          <div className="highlights">
-            <ul>
-              {item.highlights.map((highlight, i) => <li key={i}>{highlight}</li>)}
-            </ul>
-          </div>
-        )}
-      </div>
-    ))}
+      ))}
+    </div>
   </AnimatedSection>
 );
 
-const SkillsSection = ({ items }: { items: Resume['skills'] }) => {
+const SkillsSection = ({ items }: { items: JSONResume['skills'] }) => {
   const { t } = useTranslation();
   return (
     <AnimatedSection className="skills-section">
       <h2 className="section-title">{t('skills')}</h2>
-      {items.map((skill, index) => (
-        <div className="item" key={index}>
-          <h3 className="item-title">{skill.name}</h3>
-          <div className="skills-list">
-            {skill.keywords.map((keyword, i) => <span className="skill-tag" key={i}>{keyword}</span>)}
+      <div className="skills-list">
+        {items.map((skill, index) => (
+          <div className="item" key={index}>
+            <h3 className="item-title">{skill.name}</h3>
+            <div className="skill-keywords">
+              {skill.keywords.map((keyword, i) => <span className="skill-tag" key={i}>{keyword}</span>)}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </AnimatedSection>
   );
 };
 
-const ProjectsSection = ({ items, locale }: { items: Resume['projects'], locale: string }) => {
+const ProjectsSection = ({ items, locale }: { items: JSONResume['projects'], locale: string }) => {
   const { t } = useTranslation();
   return (
     <AnimatedSection className="projects-section">
@@ -112,7 +119,6 @@ const ProjectsSection = ({ items, locale }: { items: Resume['projects'], locale:
               <h3 className="item-title">{item.name}</h3>
               <div className="item-date">{formatDate(item.startDate, locale)} - {formatDate(item.endDate, locale)}</div>
             </div>
-            {item.summary && <div className="summary">{item.summary}</div>}
             {item.highlights && (
               <div className="highlights">
                 <ul>
@@ -130,7 +136,7 @@ const ProjectsSection = ({ items, locale }: { items: Resume['projects'], locale:
 
 // --- MAIN COMPONENT ---
 
-const ModernLayout = ({ resume: {resumeData:resume}, locale }: { resume: Resume, locale: string }) => {
+const ModernLayout = ({ resume: {resumeData:resume}, locale }: { resume: {resumeData: JSONResume}, locale: string }) => {
   const { t } = useTranslation();
   const experienceItems = [...(resume.work || []), ...(resume.education || [])];
   experienceItems.sort((a, b) => new Date(b.startDate || 0).getTime() - new Date(a.startDate || 0).getTime());
@@ -148,7 +154,7 @@ const ModernLayout = ({ resume: {resumeData:resume}, locale }: { resume: Resume,
           />
         }
 
-        {resume.skills && <SkillsSection items={resume.skills} />}
+        {resume.skills && <SkillsSection items={resume.skills} />} 
         {resume.projects && <ProjectsSection items={resume.projects} locale={locale} />}
 
       </div>

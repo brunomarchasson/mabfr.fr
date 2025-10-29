@@ -17,8 +17,9 @@ export async function getResumeData(locale: string, token?: string): Promise<Res
     const gistId = locale === 'fr' 
       ? process.env.GITHUB_GIST_ID_FR 
       : process.env.GITHUB_GIST_ID;
-    const githubToken = process.env.GITHUB_TOKEN;
-
+    
+      const githubToken = process.env.GITHUB_TOKEN;
+    const fileName = locale === 'fr' ? 'resume.json' : 'resume-en.json';
 
     if (!gistId || !githubToken) {
       throw new Error("Missing GitHub configuration");
@@ -41,22 +42,12 @@ export async function getResumeData(locale: string, token?: string): Promise<Res
     }
 
     const gist = await response.json();
-
-    // Look for resume.json first, then fall back to any JSON file
-    let resumeFile = gist.files["resume.json"];
-
-    if (!resumeFile) {
-      // Look for any .json file
-      const jsonFiles = Object.keys(gist.files).filter((name) =>
-        name.endsWith(".json")
-      );
-      if (jsonFiles.length > 0) {
-        resumeFile = gist.files[jsonFiles[0]];
-      }
-    }
+    console.log( gist.files)
+    // Look for the specific file based on locale
+    let resumeFile = gist.files[fileName];
 
     if (!resumeFile) {
-      throw new Error("No resume file found");
+      throw new Error(`Resume file ${fileName} not found in gist`);
     }
 
     let resumeData: JSONResume;

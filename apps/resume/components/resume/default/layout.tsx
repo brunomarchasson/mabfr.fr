@@ -49,28 +49,29 @@ export default async function DefaultLayout({ resume, locale }: DefaultLayoutPro
   const { resumeData } = resume
   
   return (
-    <main
-      className={clsx(myFont.className, styles.resume)}
-      data-testid="resume-content"
-    >
-      <Sidebar resume={resume}>
-        {resumeData.skills && (
-          <Skills
-            skills={resumeData.skills}
-            className={"section mt-4 hideMobile"}
-            locale={locale}
-          />
-        )}
-        {resumeData.languages && (
-          <Languages 
-            languages={resumeData.languages}
-            className={"section mt-4 hideMobile"}
-            locale={locale}
-          />
-        )}
-        {resumeData.basics?.url && <QRCode value={resumeData.basics?.url} />}
-      </Sidebar >
-      {resumeData.basics && <Basics  resume={resume} />}
+    <div className="default-theme-layout">
+      <main
+        className={clsx(myFont.className, styles.resume)}
+        data-testid="resume-content"
+      >
+        <Sidebar resume={resume}>
+          {resumeData.skills && (
+            <Skills
+              skills={resumeData.skills}
+              className={"section mt-4 hideMobile"}
+              locale={locale}
+            />
+          )}
+          {resumeData.languages && (
+            <Languages 
+              languages={resumeData.languages}
+              className={"section mt-4 hideMobile"}
+              locale={locale}
+            />
+          )}
+          {resumeData.basics?.url && <QRCode value={resumeData.basics?.url} />}
+        </Sidebar >
+        {resumeData.basics && <Basics  resume={resume} />}
       {resumeData.work && <Work resume={resume} locale={locale} />}
       {resumeData.projects && <Projects  resume={resume} locale={locale} />}
       {resumeData.volunteer && <Volunteer resume={resume} locale={locale} />}
@@ -81,5 +82,6 @@ export default async function DefaultLayout({ resume, locale }: DefaultLayoutPro
       {resumeData.interests && <Interests  resume={resume} locale={locale} />}
       {resumeData.references && <References  resume={resume} locale={locale} />}
     </main>
+    </div>
   );
 }
