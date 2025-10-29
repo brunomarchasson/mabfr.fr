@@ -28,6 +28,9 @@ RUN pnpm --filter=resume build
 # --- Production Stage ---
 FROM node:20-alpine AS runner
 
+# Install pnpm globally in the runner stage
+RUN npm install -g pnpm
+
 WORKDIR /app
 
 # Set environment variables for Next.js production
