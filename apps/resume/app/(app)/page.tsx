@@ -8,10 +8,10 @@ import { loadSearchParams } from "./search-params";
 import ResumeSimple from "@/components/resume/Simple";
 import ResumeTerminal from "@/components/resume/Terminal";
 import ClientWrapper from "./client-wrapper";
+import fs from 'node:fs/promises';
+import path from "node:path";
 
 async function getMessages(locale: string) {
-  const fs = require('fs/promises');
-  const path = require('path');
   const filePath = path.join(process.cwd(), 'public', 'locales', `${locale}.json`);
   try {
     const fileContent = await fs.readFile(filePath, 'utf-8');

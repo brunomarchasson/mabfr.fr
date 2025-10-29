@@ -16,7 +16,7 @@ const formatDate = (date: string | undefined, locale: string) => {
 
 const AnimatedSection = ({ children, className }: PropsWithChildren<{ className?: string }>) => {
   const ref = useRef<HTMLDivElement>(null);
-  const isVisible = useIntersectionObserver(ref as React.RefObject<Element>, { threshold: 0.1 });
+  const isVisible = useIntersectionObserver(ref as React.RefObject<HTMLElement | null>, { threshold: 0.1 });
 
   return (
     <div ref={ref} className={`animated-section ${isVisible ? 'is-visible' : ''} ${className || ''}`}>

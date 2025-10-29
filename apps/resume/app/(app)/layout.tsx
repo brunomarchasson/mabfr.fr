@@ -5,26 +5,21 @@ import { PropsWithChildren } from "react";
 import { fallbackLng, languages } from "@/i18n/settings";
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { loadSearchParams } from "./search-params";
+import { SearchParams } from "nuqs";
 
 
 
-interface RootLayoutProps extends PropsWithChildren {
-  searchParams: { [key: string]: string | string[] | undefined };
-}
 
 // export async function generateStaticParams() {
 //   return languages.map((locale) => ({ locale }));
 // }
 
 export default async function RootLayout({
-  children,
-  searchParams,
-}: RootLayoutProps) {
-    const { lang } = await loadSearchParams(searchParams || {});
-  const l = lang && languages.includes(lang) ? lang :fallbackLng;
+  children
+}: PropsWithChildren) {
     
   return (
-    <html lang={l} suppressHydrationWarning>
+    <html lang={'fr'} suppressHydrationWarning>
       <body className={GeistSans.className}>
           <ThemeProvider
             attribute="class"

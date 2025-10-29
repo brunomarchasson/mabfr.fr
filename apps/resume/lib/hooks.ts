@@ -24,7 +24,7 @@ export const useMediaQuery = (query: string) => {
 };
 
 export const useIntersectionObserver = (
-  ref: RefObject<Element>,
+  ref: RefObject<HTMLElement | null>,
   options: IntersectionObserverInit = { root: null, rootMargin: '0px', threshold: 0.1 }
 ): boolean => {
   const [isIntersecting, setIsIntersecting] = useState(false);
