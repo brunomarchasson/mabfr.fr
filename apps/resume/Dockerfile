@@ -15,7 +15,7 @@ COPY apps/resume/package.json ./apps/resume/
 
 # Install dependencies for the entire monorepo
 # This will create node_modules in the root and symlink where necessary
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 # Copy the rest of the application code
 COPY . .
