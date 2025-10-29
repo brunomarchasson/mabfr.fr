@@ -10,6 +10,7 @@ env:
   IMAGE_OWNER: brunomarchasson
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
     permissions:
@@ -18,17 +19,29 @@ jobs:
     
     strategy:
       matrix:
-        # Define the apps to build in parallel
         app: [auth, hub, resume]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
           version: 8
+
+      - name: Cache pnpm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store # This is pnpm's global content-addressable store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -38,20 +51,15 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push ${{ matrix.app }} image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./apps/${{ matrix.app }}/Dockerfile
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-${{ matrix.app }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-${{ matrix.app }}:${{ github.sha }}
-
+        run: |
+          echo "Building and pushing ${{ matrix.app }} image..."
+          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-${{ matrix.app }}:latest -f apps/${{ matrix.app }}/Dockerfile .
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/mabru-${{ matrix.app }}:latest
+          
   deploy:
     runs-on: ubuntu-latest
-    # This job depends on the successful completion of all matrix jobs in 'build'
-    needs: build
-
+    needs: [build]
+    
     steps:
       - name: Deploy auth app
         run: curl -X POST ${{ secrets.DOKPLOY_AUTH_WEBHOOK }}

@@ -158,13 +158,14 @@
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 }
 
-
+ 
 body {
   letter-spacing: var(--tracking-normal);
   color-scheme: light dark;
   .dark & {
     color-scheme: dark;
   }
+
 }
 
 @layer base {
@@ -182,8 +183,9 @@ body {
   .no-print{
       display: none !important;
   }
-  body{
+  html{
     font-size: 12px;
+    /* font-size: 10pt; */
   }
         .resume{
           break-inside: avoid;

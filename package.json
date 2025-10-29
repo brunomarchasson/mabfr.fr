@@ -5,23 +5,17 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "start": "turbo run start",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "docker:resume:build": "docker build -t resume-app-test -f apps/resume/Dockerfile .",
+    "docker:resume:run": "docker run -p 3000:3000 --env-file apps/resume/.env.local resume-app-test"
   },
-  "pnpm": {
-    "overrides": {
-      "@types/react": "19.1.13",
-      "@types/react-dom": "19.1.9"
-    },
-    "onlyBuiltDependencies": [
-      "puppeteer",
-      "sharp"
-    ]
-  },
+  "pnpm": {},
   "devDependencies": {
     "turbo": "^2.0.4"
   },
   "packageManager": "pnpm@10.7.1",
   "dependencies": {
+    "node-fetch": "^3.3.2",
     "server-only": "^0.0.1"
   }
 }

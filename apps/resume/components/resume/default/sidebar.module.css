@@ -18,8 +18,10 @@
     :global(.dark) & {
         --bg-color: var(--color-primary)
     }
+    
     @media (min-width: 768px),
     print {
+        
         --tag-text: var(--color-on-primary);
         --tag-bg: oklch(from var(--color-on-primary) l c h / 0.1);
         float: left;
@@ -99,15 +101,13 @@
         font-size: 2rem;
         font-weight: bold;
         position: relative;
-        min-height: calc(var(--border-radius) * 2);
+        height: calc(var(--border-radius) * 2);
         place-items: center;
         display: grid;
         margin-inline: 0rem -1.5rem;
         border-radius: var(--border-radius) 0 0 var(--border-radius);
         z-index: 0;
-        @media print {
-            font-size: 1.5rem;
-        }
+        
         /* background: red; */
 
     }
